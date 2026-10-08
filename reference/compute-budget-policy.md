@@ -18,7 +18,7 @@ approves the spend.
   finishing would cost.
 - Per-month or per-project budgets (from `decisions/answers.md`) bound the sum;
   when a new experiment would blow the monthly budget, that is a planning
-  decision, not Claude's call.
+  decision, not the agent's call.
 
 ## Smoke test before the queue
 
@@ -53,28 +53,28 @@ worth a notebook note and, if they change the plan, a decision entry.
 
 ## The implement / run split
 
-In research the expensive step often runs **outside Claude's session** — on a
+In research the expensive step often runs **outside the agent's session** — on a
 cluster, over days, launched by a human. The kit treats "implement" and "run" as
 separable:
 
-- Claude prepares runnable, resumable artifacts (config + launcher + passing
+- The agent prepares runnable, resumable artifacts (config + launcher + passing
   smoke test) and hands over the **exact submission command** and the expected
   output artifacts.
-- The human submits; Claude marks the card `launched` and **waits** — it does
+- The human submits; the agent marks the card `launched` and **waits** — it does
   not fabricate results or write "expected" numbers into the card.
-- When results return, Claude analyzes them. The `launched` status is the
+- When results return, the agent analyzes them. The `launched` status is the
   synchronization point across sessions (`reference/session-recovery.md`).
 
 The `cluster-ops` pack holds the project-specific scheduler recipe (real
 `sbatch`/`squeue`/partition/module-load commands, data-staging paths, the
 hand-over format). Unknown values are TODOs, never invented.
 
-## What Claude may and may not do
+## What the agent may and may not do
 
-Claude **may**, without asking: run smoke tests and cheap local jobs within a
+The agent **may**, without asking: run smoke tests and cheap local jobs within a
 stated budget; estimate costs; prepare configs and launchers.
 
-Claude **must ask** before: launching expensive or long compute; anything that
+The agent **must ask** before: launching expensive or long compute; anything that
 spends money (paid cloud, paid API quota); exceeding a declared budget. These
 are on the human-gate list in `reference/human-in-the-loop-policy.md`, and they
 hold under autonomy too (`reference/autonomy-policy.md` — an autonomous loop

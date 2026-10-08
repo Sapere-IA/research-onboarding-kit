@@ -39,8 +39,9 @@ frozen-artifacts policies.
 
 ## Output artifact
 
-Dataset cards (in `decisions/` or a `data/` docs area) and, for frozen data,
-manifest entries with checksums.
+Dataset cards (`docs/data/<dataset>.md` from `<harness-dir>/skills/research-workflow/templates/docs/doc.md.template`,
+rendered with `sh scripts/render.sh`) and, for frozen data, manifest entries with
+checksums.
 
 ## Safety constraints
 

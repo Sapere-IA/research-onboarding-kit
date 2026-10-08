@@ -25,7 +25,7 @@ number traces to a card), `figure-style` (regenerable figures), and
 
 - Before a result is confirmed — never draft a number from an unconfirmed or
   unrun experiment (`reference/research-integrity-policy.md`).
-- To write the scientific narrative on the author's behalf — Claude drafts and
+- To write the scientific narrative on the author's behalf — the agent drafts and
   traces; the author commits every claim (`reference/human-in-the-loop-policy.md`).
 - Pure-infrastructure projects with no paper target.
 
@@ -72,6 +72,6 @@ confirmed card, ready to compile to the submission PDF.
   `results/` directory; never write "expected" results.
 - Append, don't rewrite, confirmed experiment subsections — corrections append,
   matching the card discipline.
-- Claude drafts; the author confirms claims and submits. Do not upload, post, or
+- The agent drafts; the author confirms claims and submits. Do not upload, post, or
   submit anything, and keep embargoed/sensitive detail out of the draft per
   `reference/memory-policy.md`.

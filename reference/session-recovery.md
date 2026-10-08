@@ -1,107 +1,63 @@
 # Session recovery
 
-Sessions get interrupted, go stale, or go wrong: days pass between working
-sessions, compaction summarizes away details, a run launched last week finally
-returns, or Claude heads in a wrong direction for several turns. Claude Code
-ships features for all of these — and one rule keeps them safe in an RDD project:
+Sessions get interrupted, go stale, or go wrong: days pass, compaction summarizes details away, a run launched last week finally returns, or the agent heads the wrong way for several turns. Every harness has features for this; one rule keeps them safe in an RDD project:
 
 > **Durable artifacts are the source of truth, never chat history.**
-> `experiments/registry.json` holds experiment state, the cards hold
-> hypotheses/designs/results, the decision logs hold settled decisions,
-> `NOTEBOOK.html` holds what happened, and the `results/` directories hold what
-> actually came back from runs. A summary, restored checkpoint, or resumed
-> conversation is a convenience for reorienting — anything it claims is verified
-> against the artifacts before acting on it.
+> `experiments/registry.json` holds experiment state, the cards (`experiments/<ID>/card.md`) hold hypotheses, designs, runs and results, the decision logs hold settled decisions, `notebook/NOTEBOOK.md` holds what happened (and the `## Resume here` handoff), and `results/` holds what actually came back. A summary, restored checkpoint or resumed conversation is for reorienting — verify anything it claims against the artifacts before acting.
 
-(Adapted from the sdd-onboarding-kit; the RDD addition is the
-reconcile-against-`results/` rule, because runs complete outside the session.)
+The RDD addition to the SDD rule is **reconcile against `results/`**: runs complete outside the session.
 
 ## Feature landscape
 
-(Names verified against the official docs on 2026-06-12 — re-verify before
-relying on syntax.)
+| Harness | Recap / resume | Rewind / undo | Compaction | Transcripts |
+| --- | --- | --- | --- | --- |
+| Claude Code | `/recap`; `claude --continue` / `--resume`; `/branch` | `/rewind` (agent's direct file edits only) | `/compact [focus]` | `~/.claude/projects/`; `/export` |
+| Codex CLI | `codex resume` | none — use git | `/compact` | session files |
+| Cursor | chat history | checkpoints restore files from chat | summarize / new chat | chat history |
+| OpenCode | `/sessions` (alias `/resume`) | `/undo`, `/redo` | `/compact` | `/export` |
+| Antigravity | conversation history | none documented — use git | none documented — new conversation | conversation history |
 
-- **Recap** — `/recap` summarizes the session; an automatic recap appears after
-  time away. Orientation only.
-- **Rewind / checkpoints** — `/rewind` restores conversation, code, or both.
-  **It tracks only Claude's direct file edits** — not bash side effects, not
-  manual edits, and crucially **not external run state**: a job you launched is
-  still running (or done) regardless of any rewind. Local undo, not version
-  control.
-- **Resume** — `claude --continue` / `--resume` reopen sessions; per machine and
-  per directory, they do not sync across machines.
-- **Branching** — `/branch` copies the conversation to try an alternative.
-- **Compaction** — `/compact [focus]` replaces history with a summary;
-  `CLAUDE.md` and memory reload from disk and survive.
-- **Stopping** — Esc stops the current turn; work so far is kept.
-- **Transcripts** — full logs under `~/.claude/projects/` (default 30-day);
-  `/export` saves a session.
+Verified 2026-09-27; re-verify before relying on syntax. Sessions are per machine and directory; none syncs across machines. No rewind restores bash side effects, manual edits, or **external run state**.
 
-## The four practices
+## The practices
 
-### 1. Reorient with recap — then verify against artifacts
+### 1. Close sessions with the `closing` skill
 
-After days away: read the recap, then open the durable artifacts before doing
-anything: `registry.json` for every experiment's actual status, the active card
-for what was approved and what the declared gate is, `NOTEBOOK.html` for what was
-done, the decision logs for what was settled. The recap says where to look; the
-artifacts say what is true. On disagreement, the artifacts win.
+Before stopping, switching tasks, or handing work over, invoke the `closing` skill: it checks registry, cards, notebook and decisions against what happened, flags unapplied `*.feedback.md` files and unlogged runs, and writes the `## Resume here` block at the top of `notebook/NOTEBOOK.md` (current experiment, status, next action, launched jobs, blockers, uncommitted work). Then it runs a cold-start test: could a fresh session continue from the files alone?
 
-### 2. Reconcile against `results/` — the RDD-specific step
+### 2. Reorient — then verify against artifacts
 
-Because runs complete **outside the session**, the conversation can be hours or
-days behind reality. After any resume or compaction, before continuing:
+After time away: read `## Resume here` in `NOTEBOOK.md` (and the harness recap, if any), then open the artifacts: `registry.json` for actual statuses, the active card for what was approved and the declared gate, recent notebook entries, the decision logs. The handoff says where to look; the artifacts say what is true.
 
-- For every card marked `launched`, check whether its `results/<ID>/` directory
-  now has outputs. If results arrived, the card is really ready for analysis even
-  if the chat still says "waiting".
-- A run may have **failed** while you were away — check logs/exit status, don't
-  assume success.
-- `validate_registry.py` flags cards whose status disagrees with their
-  `results/` directory. **Artifacts win**: update the card and registry to match
-  what the filesystem shows, then continue.
+### 3. Reconcile against `results/`
 
-### 3. Rewind when Claude went the wrong way
+The conversation can be hours or days behind reality. After any resume or compaction:
 
-When several turns went down a wrong path, rewinding beats arguing the session
-back on course. But check what rewind cannot restore: bash side effects, manual
-edits, and **external run state** — a launched job, a deleted file, a mutated
-dataset — survive the rewind. `git status` and a look at `results/` after
-rewinding tell you what actually changed.
+- For every `launched` card, check `results/<ID>/`. If outputs arrived, the card is ready for analysis even if the chat says "waiting".
+- A run may have **failed** while you were away — check logs and exit status; don't assume success.
+- `validate_registry.py` flags status/results disagreements. **Artifacts win**: update card and registry to match the filesystem, then continue.
 
-### 4. Rely on durable artifacts as truth
+### 4. Rewind when the agent went the wrong way
 
-- **Reading:** after any resume/rewind/compaction, state is read from
-  `registry.json`, the cards, reviews-by-skeptic notes, decision logs,
-  `NOTEBOOK.html`, and `results/` — not assumed from a stale conversation.
-- **Writing:** verdicts, status changes, gate decisions, and constraints are
-  written to those artifacts *when they happen*, so losing a session loses
-  nothing that matters.
+Rewinding beats arguing a session back on course — but a launched job, a deleted file or a mutated dataset survives the rewind. Check `git status` and `results/` afterwards.
+
+### 5. Write state when it happens
+
+Verdicts, status changes, gate decisions, run rows and constraints go into the artifacts *when they happen*, so losing a session loses nothing that matters.
 
 ## Resume checklist
 
-1. `registry.json` — status of the experiment you think you are on, and any card
-   marked `launched` or `analyzed`.
-2. For each `launched` card — does `results/<ID>/` have outputs now? Did it fail?
-3. The active card — hypothesis, single change, and **declared gate** as
-   approved, not as remembered.
-4. `git status` and the current diff — what is actually changed but uncommitted.
-5. Decision logs / `NOTEBOOK.html` — decisions and events since the context you
-   remember.
+1. `notebook/NOTEBOOK.md` `## Resume here` — the last handoff.
+2. `registry.json` — the experiment you think you are on, and every `launched`/`analyzed` card.
+3. Each `launched` card — outputs in `results/<ID>/` now? A failure?
+4. The active card — hypothesis, single change, and **declared gate** as approved, not as remembered.
+5. Pending `*.feedback.md` files — the researcher's review, not yet applied.
+6. `git status` and the diff; decision logs and notebook entries since the context you remember.
 
-If conversation memory and any of these disagree, trust the artifact and say so
-explicitly before continuing.
+If memory and an artifact disagree, trust the artifact and say so before continuing.
 
 ## RDD constraints
 
-- Rewind and resume never change experiment state by themselves: a card that was
-  `launched` before a rewind is still `launched`, and its real outcome is
-  whatever `results/` and the registry show.
-- Restored context does not revive an expired approval: if a card's design
-  changed after the restored checkpoint, the card on disk is authoritative, and
-  approval status is whatever the registry says.
-- A run that completed during the gap is not "undone" by a rewind — recover its
-  outcome from `results/` and git, not from the conversation.
-- Recovery features are session conveniences, not audit trails — the durable
-  artifacts and git history remain the record (see also
-  `reference/autonomy-policy.md` for runs nobody watches).
+- Rewind and resume never change experiment state: a card `launched` before a rewind is still `launched`; its outcome is whatever `results/` and the registry show.
+- Restored context does not revive an approval: the card on disk is authoritative, and approval is whatever the card and registry say.
+- Recovery features are conveniences, not audit trails — artifacts and git history are the record (see `reference/autonomy-policy.md` for runs nobody watches).

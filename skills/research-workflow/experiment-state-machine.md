@@ -1,7 +1,7 @@
 # Experiment state machine
 
 The `status` field on each card and registry record. `experiments/registry.json`
-is the source of truth; keep the card's badge in sync.
+is the source of truth; the card's frontmatter `status` mirrors it.
 
 ```text
 draft → approved → launched → analyzed → done
@@ -37,9 +37,9 @@ draft → approved → launched → analyzed → done
 - A re-run of the same axis is a **new card** (`__v2`, `supersedes:`), never an
   edit of a completed card's design.
 
-## What Claude may do per state
+## What the agent may do per state
 
-| State | Claude may (no approval) | Claude must ask |
+| State | The agent may (no approval) | The agent must ask |
 |---|---|---|
 | draft | draft/edit the card | — |
 | approved | build config/launcher, run smoke test, cheap-local launch within budget | expensive/cluster/paid launch |

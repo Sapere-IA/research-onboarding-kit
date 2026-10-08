@@ -21,7 +21,7 @@ Add an MCP only when **all** of these hold:
 | MCP | Justified when | Scope notes |
 |---|---|---|
 | Paper/arXiv search | Literature sweeps, citation verification are frequent | Read-only; pairs with the `literature-scout` agent and the `literature-watch` pack. Scope it to that agent so its tools don't load into every session. |
-| Experiment tracker (W&B/MLflow) | The project already tracks runs there and Claude needs to read run metadata | **Read-only** by default. The kit's registry complements the tracker; it does not replace it. Never let an MCP mutate tracked runs without explicit per-action approval. |
+| Experiment tracker (W&B/MLflow) | The project already tracks runs there and the agent needs to read run metadata | **Read-only** by default. The kit's registry complements the tracker; it does not replace it. Never let an MCP mutate tracked runs without explicit per-action approval. |
 | Cloud storage / dataset registry | Large datasets live behind an API and are accessed repeatedly | Read-only; never upload/delete without approval; respect data-sensitivity rules (`decisions/answers.md`). |
 
 ## Hard rules
@@ -42,4 +42,13 @@ Add an MCP only when **all** of these hold:
 
 Where a single permission-gated CLI call would do (one-off metadata read, a
 status check), prefer it over loading a full MCP server. Reserve MCPs for
-structured or repeated access that a CLI can't serve cleanly.
+structured or repeated access that a CLI can't serve cleanly
+(`reference/cli-vs-mcp-policy.md`).
+
+## Where the configuration goes
+
+Server definitions (command, args, env or URL) are the same in every harness;
+only the file differs — `.mcp.json`, `.codex/config.toml`, `.cursor/mcp.json`,
+`opencode.json`, `.agents/mcp_config.json` (`reference/harness-primitives.md`).
+Scope to a subagent where the harness supports per-agent MCPs; otherwise
+configure project-wide under the same rules.

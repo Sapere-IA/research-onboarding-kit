@@ -1,219 +1,160 @@
-# Research Onboarding Kit for Claude Code
+# Research Onboarding Kit
 
-This kit installs a **Research Driven Development (RDD)** harness in any repository
-you work on with Claude Code. It is the research-focused sibling of the
-`sdd-onboarding-kit`: same philosophy and mechanics, but built for research
-projects (ML research, computational science, data analysis, paper-producing
-work) instead of product software.
+This kit installs a **Research Driven Development (RDD)** harness in any research repository you work on with a coding agent: **Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Google Antigravity**, or another harness with documented fallbacks. It is the research sibling of the [`sdd-onboarding-kit`](https://github.com/Sapere-IA/sdd-onboarding-kit). It is built for ML research, computational science, data analysis and paper-producing work.
 
-It is not a global user configuration. It is a reusable template that produces a
-project-specific configuration: `CLAUDE.md`, `PLAN.md`, `.claude/agents/`,
-`.claude/skills/`, `.claude/settings.json`, `experiments/` (cards + registry),
-`notebook/NOTEBOOK.html`, `decisions/`, and validation scripts.
+It is a reusable template, not a global configuration. Onboarding produces a project-specific harness: `AGENTS.md`, the harness's `agents/` and `skills/`, `PLAN.md`, `experiments/` (cards + registry), `notebook/NOTEBOOK.md`, `decisions/`, a renderer and validation scripts.
 
-## Documentation
+Full documentation: **[`DOCUMENTATION.html`](DOCUMENTATION.html)** (open it in a browser). Version: [`VERSION`](VERSION) · changes: [`CHANGELOG.md`](CHANGELOG.md).
 
-Full operational documentation lives in **[`DOCUMENTATION.html`](DOCUMENTATION.html)**
-(open it in a browser). The documentation is layered:
+## The experiment loop
 
-- `README.md` — quick start, purpose, safety model (this file);
-- `DOCUMENTATION.html` — full operational documentation;
-- `reference/` — deeper theory and policy material;
-- `skills/` — reusable procedural instructions (installed as `.claude/skills/`);
-- `agents/` — role-specific agents (installed as `.claude/agents/`).
+The central object is the **experiment card**: one concise markdown file per experiment, `experiments/<ID>/card.md`.
 
-**English is canonical for all reusable kit files.** Generated project-specific
-artifacts (cards, notebook, decisions) may use the project's preferred language.
+1. **Classify** the task: infrastructure (an infra-spec with tests), experiment (the card loop) or analysis (a cited report).
+2. **Draft the card.** It has exactly one change under test, a baseline, and metrics and gates declared *before* launch.
+3. ⛔ **The researcher approves the card** on its review page. No config, launcher or run happens before this.
+4. **Build the run artifacts:** config, launcher, and a smoke test that must pass locally.
+5. **Launch.** The agent runs cheap local jobs itself. Expensive or cluster jobs are handed to the researcher, the card goes to `launched`, and the agent waits.
+6. **Analyze** real results only. The skeptic tries to refute the result, and every run is logged, failures included.
+7. ⛔ **The researcher confirms the verdict.** The agent proposes; it never declares a gate passed.
+8. **Record** the result in the notebook and the registry.
 
-The kit protects Claude Code's context window: generated `CLAUDE.md` files stay
-short and link out, long procedures live in skills, and durable knowledge lives in
-versioned artifacts instead of chat history (see
-[`reference/context-economy.md`](reference/context-economy.md)).
-
-## What RDD does
-
-The SDD kit's central object is the **feature spec**. Research has a different
-central object and different failure modes, so RDD replaces the spec loop with the
-**experiment loop**, built around the **experiment card**:
-
-1. **Classify** the task — infrastructure (mini-SDD), experiment (the card loop),
-   or analysis/writing (cited report).
-2. **Draft the experiment card** — exactly one change under test, a baseline, and
-   metrics + gate criteria declared *before* launch.
-3. ⛔ **The researcher approves the card** — no config, launcher, or run before this.
-4. **Build run artifacts** — config (the machine-readable spec), launcher, and a
-   **smoke test** that must pass locally first.
-5. **Launch** — cheap local runs Claude may do; expensive/cluster runs are handed
-   to the human, the card goes `launched`, and Claude waits (no fabricated results).
-6. **Collect & analyze** — verify real results against the gate; the skeptic tries
-   to refute the verdict; every run is logged, including failures and negatives.
-7. ⛔ **The researcher confirms the verdict** — Claude proposes; it never declares a
-   gate passed.
-8. **Scribe** updates the notebook and registry.
-
-The two ⛔ gates sit where research goes expensively or dishonestly wrong:
-**launching compute** and **making claims**. Everything else — reading, analyzing,
-plotting, drafting, coding infrastructure — stays friction-free.
+The two gates sit where research goes expensively or dishonestly wrong: **launching compute** and **making claims**. Reading, plotting, drafting and infrastructure work stay friction-free.
 
 ## Why these mechanisms
 
-The kit was distilled from a real case: a project that lost ~6 months to
-simultaneous untested changes, a silently corrupted validation set, and checkpoint
-selection keyed to it. Each mechanism targets a classic research failure:
+The kit grew out of a project that lost about six months to three problems: untested simultaneous changes, a silently corrupted validation set, and checkpoint selection tied to that set.
 
 | Failure mode | Countermeasure |
 |---|---|
 | Many simultaneous changes; results unattributable | One change per experiment, enforced by the card |
-| Evaluation data silently mutated / leaks | Frozen-artifact policy + manifest + `check_frozen.py` |
-| No baseline; can't tell if anything improved | Baseline & reproduction gate before new experiments |
-| Silent retries and cherry-picking (p-hacking) | Every run logged, including failures/negatives |
-| Results not reproducible months later | Config-as-spec, seeds, env capture, data versioning |
-| Compute wasted on undebugged jobs | Smoke test before cluster submission |
-| Knowledge trapped in one head/chat | Decision logs, lab notebook, recorded answers |
-| Paper claims not traceable to artifacts | Claim → card → artifact traceability at write-up |
+| Evaluation data silently mutated or leaked | Frozen-artifact policy + manifest + `check_frozen.py` |
+| No baseline; can't tell if anything improved | Baseline reproduction before new experiments |
+| Silent retries and cherry-picking | Every run logged in the card, failures and negatives included |
+| Results not reproducible months later | Config-as-spec, seeds, environment capture, data versioning |
+| Compute wasted on undebugged jobs | Smoke test before any cluster submission |
+| Knowledge trapped in one head or chat | Lab notebook, decision logs, `## Resume here` handoff |
+| Paper claims not traceable to artifacts | Claim → card → artifact traceability |
 
-## How to use this kit
+## Documents: markdown in, one review page out
 
-Copy or add this folder to the project where you want to install RDD:
+Every human-facing document is markdown with frontmatter: cards, `PLAN.md`, the notebook, analysis reports, infra-specs and notes. Markdown is the source of truth. It is cheap for the agent to read and write, and it diffs cleanly.
 
-```text
-my-research-project/
-└── research-onboarding-kit/
+```bash
+sh scripts/render.sh experiments/E012_frozen-encoder/card.md   # → card.html
+sh scripts/render.sh --all                                     # every document + registry.html
 ```
 
-Then open Claude Code in `my-research-project/` and run:
+The renderer needs no runtime: it uses POSIX `sh`, and `render.ps1` covers Windows. Each document becomes one interactive page with these parts:
+
+- an "At a glance" summary
+- a status stepper
+- a ⛔ gate box when a decision is due
+- "Needs your decision"
+- collapsible sections
+
+Every ID'd item has Accept / Change / Reject / Answer / Comment buttons. The researcher clicks **Approve card** (or **Confirm verdict**), saves `card.feedback.md`, and tells the agent to *read the feedback*. The agent applies the feedback to the markdown and re-renders the page. The experiment dashboard, `registry.html`, is rendered from `experiments/registry.json`.
+
+Examples: [a card awaiting approval](experiments/E002_example-label-smoothing/card.html) · [a finished card](experiments/E001_example-baseline/card.html) · [the registry](experiments/registry.html) · [the notebook](notebook/NOTEBOOK.html).
+
+## Works with every harness
+
+The kit's files use the Claude Code layout (`.claude/`) as the reference; [`reference/harness-primitives.md`](reference/harness-primitives.md) maps each concept.
+
+| Concept | Claude Code | Codex CLI | Cursor | OpenCode | Antigravity |
+| --- | --- | --- | --- | --- | --- |
+| Instruction file | `AGENTS.md` via a `CLAUDE.md` stub | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` |
+| Skills (`SKILL.md`) | `.claude/skills/` | `.agents/skills/` | `.cursor/skills/` | `.opencode/skills/` | `.agents/skills/` |
+| Subagents | `.claude/agents/*.md` | `.codex/agents/*.toml` | `.cursor/agents/*.md` | `.opencode/agents/*.md` | `.agents/agents/*.md` |
+| Hooks | `.claude/settings.json` | `.codex/hooks.json` | `.cursor/hooks.json` | JS plugin → same scripts | `.agents/hooks.json` |
+
+Where a harness lacks a concept, the kit falls back. Subagents become roles that the main conversation plays, skills are read on demand, and hooks stay at the instruction level. One project can be shared by several harnesses: `AGENTS.md`, the cards, the registry and the notebook are common to all of them.
+
+## Install
+
+Copy this folder into your project, open your coding agent there, and run:
 
 ```text
 Read `research-onboarding-kit/instructions.md` and configure this repository to
-use Research Driven Development. Ask me all necessary questions before making
-project-specific decisions.
+use Research Driven Development with this harness. Ask me all necessary
+questions before making project-specific decisions.
 ```
 
-Claude inspects the repository, asks the configuration questions from
-`questions.md`, and generates a complete project-specific RDD harness.
+The agent inspects the repository and asks the questions in `questions.md`, starting with a recommended-defaults profile. It then generates the harness, renders `PLAN.md` and the registry, and proposes a first card, usually a baseline reproduction.
 
 ## What gets installed
 
-**Installed by default** (every onboarding):
+**Always:**
 
-- A short, project-specific `CLAUDE.md` and a `PLAN.md` (objectives, phases, gates).
-- `.claude/agents/`: research-lead, experiment-designer, analyst, skeptic, scribe,
-  literature-scout.
-- `.claude/skills/research-workflow/`: the core experiment loop, state machine,
-  classification policy, skeptic checklist, and the artifact templates.
-- `experiments/` (registry.json + registry.html + the shared `research.css`/`research.js`),
-  `notebook/NOTEBOOK.html`, `decisions/answers.md`, and the project map.
-- Cross-platform validation scripts (`validate_registry.py`, `check_frozen.py`,
-  `capture_environment.py`, `validate_structure.py`, `check_placeholders.py`).
+- A short `AGENTS.md` (plus a `CLAUDE.md` stub for Claude Code), a `PLAN.md` and the project map.
+- The roles: research-lead, experiment-designer, analyst, skeptic (read-only), scribe and literature-scout (read-only).
+- The `research-workflow` skill: the loop, the state machine, classification, the skeptic checklist, `doc-format.md`, and the document templates and render assets.
+- The session skills:
+  - `bro` re-explains something in plain language.
+  - `closing` audits the artifacts at the end of a session and writes the `## Resume here` handoff.
+  - `rdd-update` updates the harness from this kit.
+- `experiments/registry.json`, `notebook/NOTEBOOK.md`, `decisions/answers.md`, `scripts/render.sh` and `scripts/render.ps1`.
+- The validators: `validate_structure`, `validate_registry`, `check_placeholders`, `check_frozen` and `capture_environment`.
+- `<harness-dir>/rdd-kit-manifest.json`.
 
-**Optional — only with your explicit selection:**
+**Only when you select them:**
 
-- Any of the eleven skill packs (`questions.md` §16): `experiment-registry`,
-  `reproducibility-audit`, `cluster-ops`, `literature-watch`, `paper-trail`,
-  `paper-draft`, `data-provenance`, `decision-log`, `failure-learning`,
-  `git-discipline`, `figure-style`.
-- Hooks — shipped as examples, never enabled without approval.
-- MCPs — none configured by default (paper-search/tracker MCPs only on opt-in).
+- Any of 14 optional packs ([`skills/optional/`](skills/optional/README.md)): `experiment-registry`, `cluster-ops`, `reproducibility-audit`, `dependency-freshness`, `paper-draft`, `paper-trail`, `literature-watch`, `figure-style`, `data-provenance`, `decision-log`, `failure-learning`, `git-discipline`, `project-map` and `context-audit`.
+- Hooks: harness-neutral example scripts, advisory or blocking, disabled by default.
+- MCPs: none are configured by default.
 
-Nothing in the kit phones home, stores credentials, or enables external access by
-itself — the default install is fully local.
+Nothing phones home, stores credentials or enables external access: the default install is fully local.
 
-## Artifacts: styled HTML + machine state
+## Staying up to date
 
-Mirroring the SDD kit's two-tier model:
+Watch this repository's releases (**Watch → Custom → Releases**). To update an installed project, invoke its `rdd-update` skill. The skill does four things:
 
-- **Styled, self-contained HTML** for durable human-facing artifacts — the
-  experiment cards, the registry dashboard, the lab notebook, analysis reports,
-  infra-specs, and any other spec/design/proposal a human is meant to read (the
-  generic `doc.html` template) — sharing one design system (`research.css` +
-  `research.js`). **Every document a human reads is styled HTML, never plain
-  Markdown.** Open any in a browser.
-- **Machine state** in `experiments/registry.json` — the validation source of
-  truth, kept separate from the HTML so `validate_registry.py` stays robust.
-- **Markdown** for Claude-facing operational files only (`CLAUDE.md`, skills,
-  agents, policies, project map, decisions); **text** for configs and launchers.
-
-A fully rendered reference example lives under `experiments/E001_example-baseline/`
-(open `card.html`) — it is a reference for humans and agents, not installed into
-target projects.
+- reads the manifest
+- fetches the kit
+- refreshes unmodified files mechanically
+- merges adapted files and runs the `CHANGELOG.md` migration steps, with your approval for each
 
 ## Safety model
 
-- **Two human gates** (card approval, verdict confirmation) that Claude never
-  crosses on its own.
-- **No expensive/long compute without approval**; smoke test before any cluster job.
-- **Frozen artifacts never mutate**; replacements get new names + a decision.
-- **Every run logged**, failures and negatives included; no metric shopping.
-- **Memory discipline**: no global memory write without explicit approval of the
-  exact text; no secrets or sensitive/embargoed data in any layer.
-- **Hooks** are advisory or blocking, never mutating/dangerous, and disabled by
-  default. **Autonomy** is read-only monitoring at most; it never crosses a gate.
-
-See the `reference/` policies and `DOCUMENTATION.html` for detail.
+- **Two human gates** the agent never crosses: card approval and verdict confirmation. An approving feedback file counts as the decision, and the agent never writes one itself.
+- **No expensive compute without approval**, and a smoke test before any cluster job.
+- **Frozen artifacts never change.** A replacement gets a new name and a decision.
+- **Every run is logged** and no metrics are shopped for.
+- **Memory discipline:** nothing is written to global memory without approval of the exact text, and no secrets or embargoed data go into any layer.
+- **Hooks** are advisory or blocking, never mutating, and off by default.
+- **Autonomy** is limited to read-only monitoring and never crosses a gate.
 
 ## Key files
 
 | File | Purpose |
 |---|---|
-| `instructions.md` | Step-by-step onboarding procedure Claude follows |
-| `questions.md` | Project-specific decisions Claude asks before writing files |
-| `agents/` | Subagent templates (research-lead, experiment-designer, analyst, skeptic, scribe, literature-scout) |
-| `skills/research-workflow/` | The core experiment loop (copied to `.claude/skills/`) |
-| `skills/optional/` | Optional skill packs, installed only when selected |
-| `templates/` | `{{PLACEHOLDER}}` files Claude adapts (cards, registry, notebook, configs, …) |
-| `templates/assets/` | The `research.css` / `research.js` design system |
-| `reference/` | RDD theory and the integrity/reproducibility/compute/frozen/memory/autonomy policies |
-| `hooks/` | Hook policy, settings snippets, and example scripts |
-| `mcps/mcp-criteria.md` | When an external MCP is justified |
-| `scripts/` | Cross-platform validation scripts |
-| `output-project-structure.md` | Expected target-project structure after onboarding |
-| `usage-prompts.md` | Ready-to-use prompts for daily research use |
-| `DOCUMENTATION.html` | Full operational documentation (open in a browser) |
-
-## Central principle
-
-The onboarding produces a project-specific configuration. It does not copy generic
-rules without adapting them. If a decision is missing, Claude asks. Unknowns become
-explicit TODOs, never invented values.
+| `instructions.md` | Onboarding procedure the agent follows |
+| `questions.md` | Decisions to ask before writing files (§0: harness) |
+| `agents/` | The six research roles |
+| `skills/research-workflow/` | The core loop, `doc-format.md`, state machine, skeptic checklist |
+| `skills/bro/`, `skills/closing/`, `skills/rdd-update/` | Session and update skills |
+| `skills/optional/` | 14 optional packs |
+| `templates/docs/` | Card, plan, notebook, analysis, infra-spec, doc templates |
+| `templates/render/` | Page shell, `research.css`, `research.js` |
+| `scripts/` | Renderer (`render.sh` / `render.ps1`) and Python validators |
+| `reference/` | RDD theory, harness mapping, integrity/reproducibility/compute/frozen/memory/autonomy policies |
+| `hooks/` | Hook policy, per-harness wiring, example scripts |
+| `experiments/`, `notebook/` | Rendered reference examples (not installed) |
+| `CHANGELOG.md` / `VERSION` | Releases with migration notes for `rdd-update` |
 
 ## Contributing
 
-Contributions are welcome. To propose a change:
+Fork the repository, branch from `main` (`fix/…`, `feat/…`), keep each PR to one concern, and open it against `main`. Only the owner merges.
 
-1. Fork the repository.
-2. Create a branch from `main` with a descriptive name (e.g. `fix/hook-path-filter`
-   or `feat/cluster-ops-htcondor`).
-3. Make your changes. Keep PRs focused — one concern per PR.
-4. Open a pull request against `main` with a clear description of what the change
-   does and why.
-5. Wait for review. Only the repository owner merges PRs.
+- Keep kit files in English and in `{{PLACEHOLDER}}` template syntax. Generated project artifacts may use the project's language.
+- Keep installable content (agents, skills, templates, policies) harness-neutral. Harness names belong only in per-harness tables.
+- Keep `scripts/render.sh` and `scripts/render.ps1` in sync. After touching the renderer or an example, re-render: `sh scripts/render.sh experiments notebook experiments/*/`.
+- Keep the hook adapter block byte-identical across hooks. Hooks are POSIX bash and fail open without `jq`.
+- Validators use the Python standard library only and must run on POSIX and Windows.
+- A release bumps `VERSION` and adds a `CHANGELOG.md` entry with **Changes** and **Migration**.
+- Run `scripts/update-manifest.sh` after adding, renaming or deleting files. CI must pass.
 
-### Guidelines
-
-- Keep all kit files in English (generated project artifacts may use the project's
-  language).
-- Template files under `templates/` (and the optional packs) use `{{PLACEHOLDER}}`
-  syntax; keep that convention.
-- HTML artifacts (cards, registry, notebook, reports) must share
-  `research.css` / `research.js` — do not fork the design system.
-- Hook scripts must be POSIX-compatible bash and degrade gracefully (fail open)
-  when `jq` is unavailable.
-- Validation scripts must be cross-platform (standard-library Python, runs on
-  POSIX and Windows).
-- Agent files must follow the frontmatter format (`name`, `description`, `tools`);
-  keep `skeptic` and `literature-scout` read-only.
-- Run `scripts/update-manifest.sh` after adding, renaming, or deleting files, and
-  commit the updated `manifest.md`.
-- CI must pass (shellcheck, Python byte-compile, no stale `.md` artifact
-  references, placeholder-token locations, manifest freshness).
-
-### Reporting issues
-
-Open a GitHub issue with:
-
-- A short description of the bug or request.
-- Steps to reproduce (if a bug).
-- The expected vs. actual behavior.
+Report issues with a short description, reproduction steps, and expected vs. actual behavior.
 
 ## License
 

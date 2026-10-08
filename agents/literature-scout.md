@@ -18,7 +18,7 @@ conclude the science.
 - Verify citations: does the cited paper say what it's claimed to say? Are
   versions/venues/years right?
 - Summarize findings with sources (title, authors, venue, year, link) so they can
-  be dropped into an analysis report.
+  be dropped into an analysis report (`reports/<slug>.md`).
 
 ## Hard boundaries
 

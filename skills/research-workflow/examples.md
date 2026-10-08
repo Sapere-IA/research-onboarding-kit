@@ -7,21 +7,23 @@ Short worked examples of the loop. Illustrative — adapt to the project.
 > Researcher: "Try freezing the encoder and see if calibration improves."
 
 1. **Classify** → experiment (one change, a metric, a baseline).
-2. **Draft card** `E012_frozen-encoder`: hypothesis (freezing improves OOD
-   calibration without hurting accuracy); change = `encoder.requires_grad=False`,
-   all else as `E011`; baseline = `E011`; metrics M-ACC, M-ECE; gate = "ECE down
-   ≥20% relative AND accuracy within 0.5pt". Registry record `status: draft`.
-3. ⛔ Researcher approves → `status: approved`, gate frozen.
-4. Build `configs/E012_frozen-encoder.yaml`, `launchers/E012_frozen-encoder.sh`,
-   smoke test (100-sample CPU overfit) → passes → record `smoke_passed`.
-5. Cluster job → hand over `sbatch launchers/E012_frozen-encoder.sh`; researcher
-   pastes back job ID; `status: launched`; **wait**.
-6. Results return in `results/E012_frozen-encoder/`. Verify vs gate. Skeptic:
-   "only 1 seed — variance unverified" → **blocking** → run 3 seeds. Re-verify.
-   Fill Results; `status: analyzed`.
-7. ⛔ Propose verdict: "PASS on calibration, accuracy held; robustness regressed —
-   inconclusive overall, recommend follow-up." Researcher confirms.
-8. Scribe: notebook entry + registry row (gate_result, actual_cost). `status: done`.
+2. **Draft** `experiments/E012_frozen-encoder/card.md`: H1 (freezing improves OOD
+   calibration without hurting accuracy); C1 = `encoder.requires_grad=False`, all
+   else as `E011`; baseline `E011`; M1 accuracy, M2 ECE; G1 "M2 down ≥ 20%
+   relative", G2 "M1 within 0.5 pt". Registry record `draft`; render the card.
+3. ⛔ The researcher reviews `card.html`, changes G1 to 15% and approves in the
+   same feedback file. Because the feedback changed the card, the agent applies
+   it, re-renders and asks again; the second file approves with no changes →
+   `approved`, gates frozen.
+4. Build `configs/E012_frozen-encoder.yaml`, `launchers/E012_frozen-encoder.sh`;
+   smoke test (100-sample CPU overfit) passes → `smoke_passed` + Runs row R1.
+5. Cluster job → hand over `sbatch launchers/E012_frozen-encoder.sh`; the
+   researcher pastes back the job ID → Runs row R2, `launched`; **wait**.
+6. Results land in `results/E012_frozen-encoder/`. Skeptic: `BLK-1: one seed —
+   variance unverified` → run 3 seeds (Runs R3) and re-check. Fill Results,
+   propose "pass on G1 and G2", `analyzed`, render.
+7. ⛔ The researcher confirms the verdict on the page → `done`, `gate_result: pass`.
+8. Notebook entry, registry row (`actual_cost`), re-render card and registry.
 
 ## Example 2 — classification catches plumbing
 

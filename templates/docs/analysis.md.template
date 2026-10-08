@@ -1,0 +1,37 @@
+---
+doc: analysis
+title: Analysis — {{TITLE}}
+status: draft
+sources: {{CARD_OR_DATASET_IDS}}
+created: {{DATE}}
+---
+
+## Summary
+
+<!-- ≤ 3 sentences: the question and the answer. Shown as "At a glance". -->
+
+{{SUMMARY}}
+
+## Question
+
+{{QUESTION}}
+
+## Findings
+
+<!-- One sentence each; every number cites a confirmed card or dataset ID (e.g. "(E012_frozen-encoder, results/E012_frozen-encoder/metrics.json)"). Unconfirmed verdicts are labelled as such. -->
+
+F1: {{FINDING}} ({{SOURCE_ID}}).
+
+## Figures
+
+<!-- Optional — delete if none. One row per figure: | Figure | Script | Inputs |. Figures are regenerable from the script. -->
+
+| Figure | Script | Inputs |
+| --- | --- | --- |
+| `{{FIGURE_PATH}}` | `{{SCRIPT}}` | {{INPUT_IDS}} |
+
+## Caveats
+
+<!-- Single seeds, small samples, unconfirmed verdicts, known confounds — one line each, or "None." -->
+
+None.

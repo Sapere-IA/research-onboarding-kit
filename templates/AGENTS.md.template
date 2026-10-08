@@ -1,0 +1,75 @@
+# {{PROJECT_NAME}} — instructions for coding agents
+
+This project uses **Research Driven Development (RDD)**. The unit of work is the **experiment**; its artifact is the **experiment card**, one markdown file per experiment. These instructions apply to every coding agent working here.
+
+{{ONE_LINE_PROJECT_DESCRIPTION}}
+
+## Where things live
+
+- `PLAN.md` governs: objectives, phases, gates, experiment matrix.
+- Project map: `{{PROJECT_MAP_PATH}}` (orientation; never copy its tree here).
+- Experiment status: `experiments/registry.json` (source of truth; dashboard `experiments/registry.html`).
+- Cards: `experiments/<ID>/card.md`. Lab notebook: `notebook/NOTEBOOK.md` (`## Resume here` on top). Decisions: `decisions/`.
+
+## Hard rules
+
+- **One change per experiment.** Two changes = two cards.
+- **Gates are declared on the card before launch.** Changing them later needs a dated decision entry.
+- **Two human gates ⛔:** the researcher approves the card before any config, launcher or run; the researcher confirms the verdict before a gate counts as passed. The agent proposes; it never declares a gate passed.
+- **No expensive or long compute without approval.** The smoke test passes locally first; cluster and paid runs are handed to the researcher (`{{COMPUTE_POLICY_PATH}}`).
+- **Frozen artifacts never change:** {{FROZEN_LIST_OR_NONE}}. Verify with `scripts/check_frozen.py`; a replacement gets a new name and a decision.
+- **Every run is logged** in the card's Runs table, failures and negative results included.
+- **Data sensitivity:** {{DATA_SENSITIVITY_RULES}}. Never upload, print or commit: {{NEVER_LIST}}.
+- **Domain constraints:** {{DOMAIN_SPECIFIC_CONSTRAINTS}}.
+
+## Documents
+
+- Human-facing documents are **markdown** from `{{HARNESS_DIR}}/skills/research-workflow/templates/docs/` — cards, plan, notebook, analysis reports (`reports/`), infra-specs (`specs/<module>/spec.md`), other notes. Format and budgets: `{{HARNESS_DIR}}/skills/research-workflow/doc-format.md`. Keep them short: Summary ≤ 3 sentences, one sentence per item, each fact once.
+- Render for review with `{{RENDER_COMMAND}} <file.md>` (all: `{{RENDER_COMMAND}} --all`; Windows: `scripts/render.ps1`). The page `<file>.html` is generated — never edit it.
+- The researcher reviews on the page and saves `<file>.feedback.md` (or pastes it). When asked to read the feedback: apply it to the markdown, re-render, delete the file. An approving file with no change/reject items is the researcher's gate decision.
+
+## Commands
+
+```bash
+{{ENV_SETUP_COMMAND}}      # create/activate the environment
+{{TEST_COMMAND}}           # tests (infrastructure)
+{{SMOKE_TEST_COMMAND}}     # smallest run proving a job will not crash
+{{SUBMIT_COMMAND}}         # how long jobs are launched
+```
+
+If a command is unknown, ask — never invent one.
+
+## Skills
+
+- `research-workflow` — the experiment loop: `{{HARNESS_DIR}}/skills/research-workflow/SKILL.md`. Classify first: infrastructure (infra-spec + tests) / experiment (card loop) / analysis (cited report).
+- `bro` — re-explains the last answer, a file, an ID (`G1`, `Q2`, `E012_slug`) or a term in plain language, in a few lines.
+- `closing` — before ending a session: brings registry, cards and notebook up to date and writes the `## Resume here` handoff.
+- `rdd-update` — updates this harness from the research-onboarding-kit (installed version and files: `{{HARNESS_DIR}}/rdd-kit-manifest.json`).
+
+Optional skills installed:
+
+{{OPTIONAL_SKILLS_LIST}}
+
+Invoke a skill by name with this harness's skill invocation ({{SKILL_INVOCATION}}); where skills are not loaded automatically, read its `SKILL.md` and follow it.
+
+## Roles
+
+Defined in `{{HARNESS_DIR}}/agents/`. Use them as subagents where supported; otherwise read the role file and act as that role in the main conversation, one at a time. Roles never cross a ⛔ gate.
+
+`research-lead` (routes, never skips gates) · `experiment-designer` (drafts cards; refuses more than one change) · `analyst` (configs, launchers, analysis; runs smoke tests) · `skeptic` (read-only; tries to refute verdicts) · `scribe` (notebook and registry) · `literature-scout` (read-only literature search).
+
+{{HARNESS_NOTES}}
+
+## Policies
+
+- Hooks: {{HOOKS_POLICY}}
+- MCPs and external CLIs: {{MCP_POLICY}}
+- Git: {{GIT_POLICY}}
+
+## Context and session recovery
+
+Keep this file short; long procedures live in skills. Compact between unrelated tasks with the harness's context commands ({{CONTEXT_COMMANDS}}). Durable truth lives in artifacts, not chat: after any resume, rewind or compaction, read `notebook/NOTEBOOK.md § Resume here`, then reconcile `registry.json` and the cards against `results/` — artifacts win.
+
+## When RDD may be relaxed
+
+{{RDD_SKIP_POLICY}}

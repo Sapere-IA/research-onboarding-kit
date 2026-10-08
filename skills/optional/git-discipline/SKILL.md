@@ -44,8 +44,8 @@ else stays ask-first.
 ## Required inputs
 
 - The artifact the change traces to (card ID / infra-spec / report).
-- The project's git policy from `CLAUDE.md` (branch naming, commit convention,
-  whether Claude may commit/push).
+- The project's git policy from `AGENTS.md` (branch naming, commit convention,
+  whether the agent may commit/push).
 
 ## Procedure
 

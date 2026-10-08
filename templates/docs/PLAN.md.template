@@ -1,0 +1,51 @@
+---
+doc: plan
+title: Research plan — {{PROJECT_NAME}}
+approval: pending
+approver: {{APPROVER}}
+updated: {{DATE}}
+---
+
+## Summary
+
+<!-- ≤ 3 sentences: what the project tries to show, against what, by when. Shown as "At a glance". -->
+
+{{PLAN_SUMMARY}}
+
+## Objectives
+
+<!-- Numbered, owner-confirmed goals; one sentence each. -->
+
+O1: {{OBJECTIVE_1}}
+O2: {{OBJECTIVE_2}}
+
+## Prior work
+
+<!-- What exists now: publications, baselines, reference code, checkpoints — one line each, with where it lives. -->
+
+- {{PRIOR_WORK}}
+
+## Phases and gates
+
+<!-- One timeline item per phase: "N. [marker] P<n>: Name — Gate: <quantitative criterion> (approver)". Only the approver passes a gate, on a confirmed verdict. An undefined metric stays an explicit TODO gate; dependent cards are blocked until it is defined. -->
+
+1. [ ] P1: {{PHASE_1_NAME}} — Gate: {{PHASE_1_GATE}} ({{APPROVER}}).
+2. [ ] P2: {{PHASE_2_NAME}} — Gate: {{PHASE_2_GATE}} ({{APPROVER}}).
+
+## Experiment matrix
+
+<!-- Planned experiments and what each varies. Status lives in experiments/registry.json (rendered as registry.html) — never repeat it here. A card that does not fit this matrix is a plan-change proposal. -->
+
+| Experiment | Phase | What varies |
+| --- | --- | --- |
+| `{{E_ID}}` | P1 | {{WHAT_VARIES}} |
+
+## Risks
+
+<!-- Optional — delete if none. One line per risk: risk — mitigation. -->
+
+- {{RISK}} — {{MITIGATION}}
+
+## Decisions
+
+Methodological choices and rejected options live in `decisions/`, not here.

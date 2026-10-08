@@ -42,11 +42,11 @@ the **experiment loop**, with two human gates (⛔):
 3. ⛔ **Researcher approves the card** — no config, launcher, or run before this.
 4. **Implement run artifacts** — config (the machine-readable spec), launcher,
    and a **smoke test** that must pass locally first.
-5. **Launch** — cheap locally within budget Claude may run; expensive/cluster
-   work is handed over to the human, the card goes `launched`, and Claude waits.
+5. **Launch** — cheap locally within budget the agent may run; expensive/cluster
+   work is handed over to the human, the card goes `launched`, and the agent waits.
 6. **Collect & analyze** — verify real results against the declared gate; the
    skeptic tries to refute; every run logged, failures and negatives included.
-7. ⛔ **Verdict confirmed** — Claude proposes, the researcher confirms; only then
+7. ⛔ **Verdict confirmed** — the agent proposes, the researcher confirms; only then
    does a plan gate move and a decision get proposed.
 8. **Scribe updates** the notebook and registry; a card is not `done` while its
    artifacts are missing or its registry row is stale.
@@ -59,14 +59,14 @@ friction-free. *Do not gate analysis on process.*
 ## The implement / run split
 
 A structural difference from SDD: the expensive step (training, simulation,
-field/lab work) often runs **outside Claude's session** — on a cluster, over
+field/lab work) often runs **outside the agent's session** — on a cluster, over
 days, launched by a human. So the kit separates "implement" from "run":
 
-- Claude prepares runnable, **resumable** artifacts (config + launcher + passing
+- The agent prepares runnable, **resumable** artifacts (config + launcher + passing
   smoke test) and hands over the exact submission command and expected outputs.
-- The human executes; Claude marks the card `launched` and waits — no fabricated
+- The human executes; the agent marks the card `launched` and waits — no fabricated
   or "expected" results.
-- Claude analyzes when results return.
+- The agent analyzes when results return.
 
 The `launched` status is the synchronization point across sessions; after any
 resume, state is reconciled against the `results/` directories
@@ -92,9 +92,9 @@ matrix is probably infrastructure.
 
 1. **Project-specific generation, never generic copying** — onboarding asks;
    missing decisions are asked, not assumed.
-2. **Human-in-the-loop** — transitions that matter are human-gated; Claude
+2. **Human-in-the-loop** — transitions that matter are human-gated; the agent
    proposes, the researcher approves.
-3. **Context economy** — `CLAUDE.md` stays short and links out; procedures live
+3. **Context economy** — `AGENTS.md` stays short and links out; procedures live
    in skills; durable knowledge in artifacts.
 4. **Local-first** — fully functional with no external MCP/CLI; external tools
    are optional, approval-gated, narrower-tool-preferred.

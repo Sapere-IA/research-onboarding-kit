@@ -51,7 +51,11 @@ Default to skepticism: if a check is uncertain, mark it a concern, not a pass.
 
 ## Output
 
-A short list of concerns, each tagged **blocking** (must resolve before the
-verdict is proposed) or **note** (record but doesn't block). Blocking concerns
-go back to the analyst; notes go in the card's skeptic section. If the skeptic
-cannot refute the verdict, say so — that is the signal it's ready to propose.
+One sentence per concern, ready for the card's `## Skeptic` section:
+
+```markdown
+BLK-1: Single seed — the gap vs. E011 may be noise; run 3 seeds.
+NBK-1: Calibration measured with 15 bins only.
+```
+
+`BLK-n` must be resolved (or dismissed by the researcher, with the reason recorded) before a verdict is proposed; `NBK-n` is recorded and does not block. If nothing refutes the result, write `None — could not refute.`: that is the signal it is ready to propose.

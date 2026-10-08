@@ -37,4 +37,4 @@ fi
 
 # Hand-over note for cluster use: the human submits this file (e.g.
 #   sbatch launchers/{{ID}}.sh
-# ) and pastes back the job ID; Claude marks the card `launched` and waits.
+# ) and pastes back the job ID; the agent marks the card `launched` and waits.

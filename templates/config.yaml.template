@@ -5,7 +5,7 @@
 
 experiment:
   id: {{ID}}                      # matches the card, launcher, and results dir
-  card: experiments/{{ID}}/card.html
+  card: experiments/{{ID}}/card.md
   plan_ref: {{PLAN_REF}}
 
 # --- The single change under test vs. the baseline ---

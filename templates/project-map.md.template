@@ -1,9 +1,9 @@
 # Project map — {{PROJECT_NAME}}
 
-*Orientation for Claude: where things live, how to run them, what is protected.
+*Orientation for the agent: where things live, how to run them, what is protected.
 Keep it concise — a shallow annotated tree (2–3 levels), not an exhaustive
 listing. Update when the structure changes significantly. Default location:
-`.claude/context/project-map.md`. Never record secrets or credentials.*
+`<harness-dir>/context/project-map.md`. Never record secrets or credentials.*
 
 ## Directory tree (current)
 
@@ -40,4 +40,4 @@ Unknown commands are `TODO: ask the researcher` — never invented.
 - Baselines / prior work: {{BASELINES}}
 - Competing / related work to track: {{RELATED_WORK_OR_NONE}}
 - Experiment tracker in use (if any): {{TRACKER_OR_NONE}}
-- Compute environment: {{COMPUTE_ENV}} (scheduler: {{SCHEDULER_OR_NONE}}; GPU on Claude's machine: {{GPU_YES_NO}})
+- Compute environment: {{COMPUTE_ENV}} (scheduler: {{SCHEDULER_OR_NONE}}; GPU on the agent's machine: {{GPU_YES_NO}})

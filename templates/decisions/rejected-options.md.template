@@ -9,7 +9,7 @@ Rules:
 - Append new entries below the marker, newest first.
 - Log only options that were seriously considered and meaningfully rejected.
 - Never log secrets, credentials, or sensitive/embargoed data.
-- Proposed by Claude, recorded only after the researcher accepts.
+- Proposed by the agent, recorded only after the researcher accepts.
 - If the conditions that caused the rejection change, add a new entry that
   reopens the question; do not delete the old one.
 

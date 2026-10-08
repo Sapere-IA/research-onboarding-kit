@@ -45,7 +45,7 @@ research errors.
    ```
 3. Write only where the researcher chose. Global memory only on explicit choice,
    and only if genuinely project-independent.
-4. If load-bearing, also propose a `CLAUDE.md` hard rule.
+4. If load-bearing, also propose an `AGENTS.md` hard rule.
 
 ## Output artifact
 

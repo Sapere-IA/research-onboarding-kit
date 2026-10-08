@@ -6,15 +6,16 @@ Copy-paste prompts for common research tasks once the harness is installed.
 
 ```text
 Read `research-onboarding-kit/instructions.md` and configure this repository to
-use Research Driven Development. Ask me all necessary questions before making
-project-specific decisions.
+use Research Driven Development with this harness. Ask me all necessary
+questions before making project-specific decisions.
 ```
 
 ## Start a new experiment
 
 ```text
-/research-workflow I want to test <one change> against <baseline>. Draft the
-experiment card first; don't build configs or launch anything until I approve it.
+Use the research-workflow skill: I want to test <one change> against
+<baseline>. Draft the card, render it, and stop — no configs or launches until I
+approve it on the page.
 ```
 
 ## Classify an ambiguous task
@@ -23,6 +24,26 @@ experiment card first; don't build configs or launch anything until I approve it
 Is this an experiment, infrastructure, or analysis? Classify it per the
 research-workflow skill, then propose the right artifact (card / infra-spec /
 analysis report).
+```
+
+## Read my review
+
+```text
+Read the feedback for <ID> (experiments/<ID>/card.feedback.md, or my Downloads),
+apply it to the card, re-render, and tell me in 5 lines what changed.
+```
+
+## Explain it simply
+
+```text
+Use the bro skill on G1 of <ID>.            (or: on your last message)
+```
+
+## End of session
+
+```text
+Use the closing skill: bring the registry, cards and notebook up to date, write
+the Resume-here handoff, and ask me before committing.
 ```
 
 ## After I approve a card
@@ -38,7 +59,8 @@ give me the exact command to run.
 ```text
 Results for <ID> are in results/<ID>/. Verify them against the card's declared
 gate, run the skeptic to try to refute the verdict, fill the card's Results, and
-propose a verdict for me to confirm. Don't declare the gate passed.
+propose a verdict, and render the card for me to confirm. Don't declare the gate
+passed.
 ```
 
 ## Reconcile after time away
@@ -52,8 +74,8 @@ any status that disagrees with what's on disk. Artifacts win.
 ## Analysis / writing
 
 ```text
-Write an analysis report answering <question> from <card IDs / dataset IDs>.
-Every number must cite its source artifact; name the script for each figure.
+Write reports/<slug>.md answering <question> from <card IDs / dataset IDs>.
+Every number cites its source artifact; name the script for each figure. Render it.
 ```
 
 ## Before submitting a paper
@@ -68,4 +90,11 @@ hashes match (check_frozen.py), figures regenerate. Report what fails.
 ```text
 Run `python scripts/validate_registry.py` and fix or flag any inconsistency
 between the registry, the cards, and the results directories.
+```
+
+## Update the harness
+
+```text
+Use the rdd-update skill to bring this harness up to the latest
+research-onboarding-kit version. Show me each migration step before applying it.
 ```

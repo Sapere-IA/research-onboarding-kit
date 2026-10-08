@@ -9,22 +9,21 @@ experiment, not during onboarding.
 
 ```
 experiments/
-├── research.css                 # one shared copy of the design system
-├── research.js                  # (copied from templates/assets/)
-├── registry.json                # MACHINE STATE — validation source of truth
-├── registry.html                # human-facing dashboard (rendered from registry.json)
+├── registry.json                # MACHINE STATE — status source of truth
+├── registry.html                # dashboard, rendered from registry.json (generated)
 └── E<seq>_<slug>/               # one folder per experiment
-    ├── card.html                # the experiment card (from experiment-card.html.template)
-    └── analysis-report.html     # optional, for analysis/writing tasks
+    ├── card.md                  # the experiment card — one markdown doc, all sections
+    ├── card.html                # rendered review page (generated)
+    ├── card.feedback.md         # the researcher's review, deleted once applied (gitignored)
+    └── analysis.md              # optional analysis report
 ```
 
 Sibling top-level dirs carry the same experiment IDs:
 `configs/E<seq>_<slug>.yaml`, `launchers/E<seq>_<slug>.sh`,
 `results/E<seq>_<slug>/`.
 
-The card's `<link>`/`<script>` use `../research.css` and `../research.js`
-(one level up from the experiment folder). `registry.html` uses
-`research.css`/`research.js` in the same `experiments/` directory.
+Render with `sh scripts/render.sh experiments/` (registry + docs in the folder)
+or `sh scripts/render.sh experiments/<ID>/card.md`. Never edit the `.html`.
 
 ## Naming
 
@@ -47,7 +46,7 @@ the original.
 | `status` | enum | `draft` \| `approved` \| `launched` \| `analyzed` \| `done` \| `failed` \| `abandoned` |
 | `plan_ref` | string | `PLAN.md §…` phase/row this card serves |
 | `supersedes` | string\|null | ID this card replaces, or `null` |
-| `card_path` | string | path to `card.html` |
+| `card_path` | string | path to `card.md` |
 | `config` | string\|null | path to the run config |
 | `launcher` | string\|null | path to the launcher |
 | `results_dir` | string\|null | path to `results/<id>/` |
@@ -62,7 +61,8 @@ the original.
 
 ### Consistency rules (enforced by `validate_registry.py`)
 
-- Every `card_path` exists; every experiment folder has a registry record.
+- Every `card_path` exists; every folder with a `card.md` has a registry record.
+- Card frontmatter `status` / `gate_result` equal the record's.
 - `status` ∈ the enum above; `gate_result` ∈ its enum.
 - A `launched`/`analyzed`/`done` record has a non-null `config` and `results_dir`.
 - A `done` record has `gate_result` ≠ `pending` and a non-empty `results_dir` on disk.
@@ -72,5 +72,5 @@ the original.
   (`reference/compute-budget-policy.md`).
 - `supersedes`, if set, names an existing record.
 
-The card's HTML meta-table mirrors these fields for human reading, but
-`registry.json` is authoritative; keep the two in sync when a status changes.
+The card's frontmatter mirrors `status` and `gate_result`; `validate_registry.py`
+errors when they disagree. `registry.json` is authoritative — update both together.

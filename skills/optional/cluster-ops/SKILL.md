@@ -6,7 +6,7 @@ description: The project's real cluster recipe — scheduler commands, partition
 # Cluster ops
 
 > **Generated, project-specific.** This file is filled from the project's answers
-> (`questions.md` §C7) during onboarding, like the SDD `run-and-verify` pack.
+> (`questions.md` §C7) during onboarding (like the SDD kit's `run-and-verify` pack).
 > Unknown values are recorded as `TODO: ask the researcher` — **never invented**.
 
 ## Purpose
@@ -51,8 +51,8 @@ When a job must be submitted by the human:
 2. Give the **exact** submission command and the output artifacts it will create
    (`results/<ID>/...`).
 3. Ask the human to paste back the **job ID** (or "done").
-4. Set the card/registry status to `launched` and **wait** — no fabricated
-   results. The `launched` status is the cross-session sync point.
+4. Set the card's frontmatter and registry status to `launched`, log the job in
+   the card's **Runs** table, and **wait** — no fabricated results. The `launched` status is the cross-session sync point.
 
 ## Output artifact
 

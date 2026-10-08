@@ -10,6 +10,6 @@
 - Where NOT to apply: {{situations where it doesn't, to avoid over-generalizing}}
 - Source: {{card ID / analysis report / notebook entry that surfaced it}}
 
-<!-- Proposed by Claude; written only after the researcher approves the exact
+<!-- Proposed by the agent; written only after the researcher approves the exact
      text and chooses the location (reference/memory-policy.md). Never store
      secrets or sensitive/embargoed data. -->

@@ -1,0 +1,119 @@
+---
+doc: card
+title: {{ID}} — {{TITLE}}
+experiment_id: {{ID}}
+status: draft
+gate_result: pending
+plan_ref: {{PLAN_REF}}
+supersedes: none
+approver: {{APPROVER}}
+budget: {{BUDGET}}
+smoke_passed: TODO
+---
+
+## Summary
+
+<!-- ≤ 3 sentences: the question, the one change, what counts as a pass. Shown as "At a glance". -->
+
+{{SUMMARY}}
+
+## Hypothesis
+
+H1: {{HYPOTHESIS}}
+
+## Change under test
+
+<!-- Exactly ONE change vs. the baseline; everything else is held identical. Two changes = two cards. -->
+
+C1: {{SINGLE_CHANGE}}
+
+## Baseline
+
+<!-- A card ID (E011_baseline) or a named reference result, with its value and source. No baseline yet → write a baseline-reproduction card first. -->
+
+{{BASELINE}}
+
+## Metrics and gate
+
+<!-- Declared BEFORE launch and frozen at approval; changing them later needs a dated decision entry. One sentence each; each gate names its metric. -->
+
+M1: {{METRIC}}
+G1: {{GATE_CRITERION}} (M1).
+
+## Setup
+
+<!-- Every result-affecting knob lives in the config. Add a "Dependencies" row only when library/API versions matter (dependency-freshness pack). -->
+
+| Item | Value |
+| --- | --- |
+| Config | `configs/{{ID}}.yaml` |
+| Launcher | `launchers/{{ID}}.sh` |
+| Code | TODO: git SHA at launch |
+| Data | {{DATASET_IDS_AND_CHECKSUMS}} |
+| Frozen inputs | {{FROZEN_IDS_OR_NONE}} |
+| Seeds | {{SEEDS}} |
+| Smoke test | `{{SMOKE_COMMAND}}` |
+
+## Open questions
+
+<!-- Optional — delete if none. One card per question; blocking ⇒ "::: card blocking-yes" + [!blocking Blocking], else [!warning Non-blocking]. A pending blocking question keeps the card in draft. Resolved: badge [!ok Resolved] + **Decision:** line. -->
+
+::: card blocking-yes
+#### Q1 — {{QUESTION_TITLE}} [!blocking Blocking]
+
+- **Question:** {{QUESTION}}
+- **Default if unanswered:** {{DEFAULT}}
+:::
+
+## Assumptions
+
+<!-- Optional — delete if none. One card per assumption (risk-low / risk-medium / risk-high). Accepted: [!ok Accepted]; rejected: [!rejected Rejected] + replacement. -->
+
+::: card risk-medium
+#### A1 — {{ASSUMPTION_TITLE}} [!pending Pending]
+
+- **Assumption:** {{ASSUMPTION}}
+- **Impact if wrong:** {{IMPACT}}
+:::
+
+## Plan
+
+<!-- ≤ ~8 steps. Markers: [ ] pending, [>] in progress, [x] done, [!] blocked. Nothing past T1 before approval (⛔ gate 1). -->
+
+1. [ ] T1: Build config and launcher — Only after the card is approved.
+2. [ ] T2: Smoke test passes locally — `{{SMOKE_COMMAND}}`; record the date in `smoke_passed`.
+3. [ ] T3: Launch or hand over — Within the budget; expensive runs go to the researcher.
+4. [ ] T4: Analyze against G1 — Real outputs only; skeptic pass before proposing a verdict.
+5. [ ] T5: Verdict confirmed — Notebook entry and registry row updated (⛔ gate 2).
+
+## Runs
+
+<!-- Every run, including crashes and negative results; never delete a row. Add the table at the first launch:
+| Run | Date | Command / job | Outcome | Notes |
+Outcome cells: "!ok finished", "!pending running", "!blocking crashed". -->
+
+None yet.
+
+## Results
+
+<!-- Only from real outputs in results/{{ID}}/ — never expected numbers. Table: | Metric | Baseline | This run | Gate | Verdict | with "!ok pass" / "!blocking fail" / "!warning inconclusive" verdict cells; then one line linking the artifacts. -->
+
+Pending — run not returned.
+
+## Skeptic
+
+<!-- The skeptic tries to refute the result before a verdict is proposed (skeptic-checklist.md). One sentence each: "BLK-1: …" must be resolved first; "NBK-1: …" is recorded. "None." only after the pass ran. -->
+
+Not run yet.
+
+## Verdict
+
+<!-- Proposed by the agent after the skeptic pass; confirmed only by the approver (⛔ gate 2). Format: "Proposed: [!ok pass] — one sentence." then "Confirmed: [!pending pending] — {{APPROVER}}". -->
+
+Pending.
+
+## Follow-ups
+
+<!-- Next cards (with what they vary) and decision-log candidates. Delete if none once done. -->
+
+None yet.

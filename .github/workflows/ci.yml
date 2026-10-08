@@ -13,9 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run shellcheck
         run: |
-          # .template scripts contain {{PLACEHOLDER}} tokens and are not valid bash yet.
-          files=$(find hooks scripts -name '*.sh' -not -name '*.template' 2>/dev/null || true)
-          if [ -z "$files" ]; then echo "No shell scripts to check yet."; exit 0; fi
+          # .template scripts contain {{PLACEHOLDER}} tokens and are not valid shell yet.
+          files=$(find hooks scripts -name '*.sh' -not -name '*.template')
           echo "Checking:"; echo "$files"
           shellcheck $files
 
@@ -28,47 +27,90 @@ jobs:
         with:
           python-version: '3.x'
       - name: Compile
-        run: |
-          files=$(find scripts -name '*.py' 2>/dev/null || true)
-          if [ -z "$files" ]; then echo "No Python scripts to check yet."; exit 0; fi
-          echo "Compiling:"; echo "$files"
-          python -m py_compile $files
+        run: python -m py_compile scripts/*.py
 
   consistency:
-    name: Reference and placeholder consistency
+    name: Reference, rendering and placeholder consistency
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: No stale Markdown references to HTML artifacts
-        run: |
-          # The human-facing artifacts are styled HTML (card.html, registry.html,
-          # NOTEBOOK.html, analysis-report.html, infra-spec.html). Their .md names
-          # must not reappear anywhere in the kit. (project-map.md is intentionally
-          # Markdown — a Claude-facing operational file — and is NOT guarded.)
-          if grep -rn \
-            -e 'experiment-card\.md\b' -e 'analysis-report\.md\b' \
-            -e 'NOTEBOOK\.md\b' -e 'registry\.md\b' -e 'card\.md\b' \
-            -e 'infra-spec\.md\b' \
-            --include='*.md' --include='*.sh' --include='*.py' \
-            --include='*.template' --include='*.html' --include='*.json' .; then
-            echo "::error::Stale .md reference found (these artifacts are HTML now)."
-            exit 1
-          fi
-          echo "OK: no stale .md artifact references."
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
       - name: Placeholder tokens only where expected
         run: |
-          # {{PLACEHOLDER}} tokens belong in templates/ and *.template files.
-          # A few docs legitimately mention the convention itself.
-          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|DOCUMENTATION\.html$|instructions\.md$|skills/research-workflow/experiment-card-format\.md$|skills/optional/|scripts/validate_structure\.py$|\.github/)'
-          offenders=$(grep -rl "{{[A-Z0-9_][A-Z0-9_]*}}" . --include='*.md' --include='*.sh' --include='*.py' --include='*.html' --include='*.json' --include='*.template' --include='*.css' --include='*.js' | grep -Ev "$allowlist" || true)
+          # {{PLACEHOLDER}} tokens belong in templates/ and *.template files. A few docs
+          # mention the convention itself; render.sh/.ps1 fill the shell template's tokens.
+          allowlist='^(\./)?(templates/|scripts/[^/]+\.template$|scripts/render\.(sh|ps1)$|scripts/validate_structure\.py$|README\.md$|README\.html$|DOCUMENTATION\.html$|instructions\.md$|CHANGELOG\.md$|skills/research-workflow/doc-format\.md$|skills/rdd-update/SKILL\.md$|skills/optional/|\.github/)'
+          offenders=$(grep -rl "{{[A-Z0-9_][A-Z0-9_]*}}" . --include='*.md' --include='*.sh' --include='*.ps1' --include='*.py' --include='*.html' --include='*.json' --include='*.template' --include='*.css' --include='*.js' | grep -Ev "$allowlist" || true)
           if [ -n "$offenders" ]; then
             echo "::error::Unexpected {{PLACEHOLDER}} tokens in:"
             echo "$offenders"
             exit 1
           fi
           echo "OK: placeholder tokens only in expected locations."
+
+      - name: No stale v1 (HTML-template) references
+        run: |
+          # Since 2.0.0 every human-facing doc is markdown rendered by scripts/render.sh.
+          # The v1 HTML templates and the copied design-system assets must not come back.
+          # Allowed: the changelog, the update skill's migration notes, the generated manifest, this workflow.
+          pattern='experiment-card\.html|analysis-report\.html|infra-spec\.html|PLAN\.html\.template|experiment-card-format|NOTEBOOK\.html\.template|templates/assets/'
+          offenders=$(grep -rnE "$pattern" . --include='*.md' --include='*.sh' --include='*.ps1' --include='*.py' --include='*.template' --include='*.html' --include='*.json' --include='*.yml' \
+            | grep -vE '^(\./)?(CHANGELOG\.md|skills/rdd-update/|manifest\.md|\.github/)' || true)
+          if [ -n "$offenders" ]; then
+            echo "::error::Stale v1 reference found (docs are markdown now; HTML is rendered):"
+            echo "$offenders"
+            exit 1
+          fi
+          echo "OK: no stale v1 references."
+
+      - name: Installable content stays harness-neutral
+        run: |
+          # Agents, skills and templates are installed into any harness (Claude Code, Codex,
+          # Cursor, OpenCode, Antigravity). They must not hard-code one harness: no
+          # "Claude must/should/…" phrasing, no `.claude/` paths, no `CLAUDE.md` as the
+          # project instruction file. Per-harness lines (naming another harness) are allowed.
+          offenders=$(grep -rn -E 'Claude (Code )?(must|may|should|can|cannot|never|asks|drafts|proposes)|\.claude/|CLAUDE\.md' \
+              agents skills/research-workflow skills/optional skills/bro skills/closing templates/docs \
+              templates/AGENTS.md.template templates/project-map.md.template \
+            | grep -v -E 'Codex|Cursor|OpenCode|Antigravity|harness-primitives' || true)
+          if [ -n "$offenders" ]; then
+            echo "::error::Harness-specific wording in installable content:"
+            echo "$offenders"
+            exit 1
+          fi
+          echo "OK: installable content is harness-neutral."
+
+      - name: Hook adapter block is identical in every hook
+        run: |
+          # The RDD hook adapter (hooks/hooks-policy.md, "Hook contract") must be
+          # byte-identical across the example hooks apart from the default event name.
+          extract() { sed -n '/^# ---- RDD hook adapter/,/^# ---- end RDD hook adapter ----/p' "$1" | sed -E 's/rdd_event:-[A-Za-z]+/rdd_event:-EVENT/'; }
+          ref=$(extract hooks/examples/block-unapproved-launch.sh)
+          [ -n "$ref" ] || { echo "::error::adapter block not found in the reference hook"; exit 1; }
+          for f in $(find hooks/examples -name '*.sh'); do
+            if [ "$(extract "$f")" != "$ref" ]; then
+              echo "::error::adapter block in $f differs from block-unapproved-launch.sh"
+              diff <(echo "$ref") <(extract "$f") || true
+              exit 1
+            fi
+          done
+          echo "OK: adapter block identical in $(find hooks/examples -name '*.sh' | wc -l | tr -d ' ') hooks."
+
+      - name: Rendered examples are up to date
+        run: |
+          # The kit commits its rendered reference examples; re-render and compare.
+          sh scripts/render.sh experiments notebook experiments/*/
+          if ! git diff --exit-code -- '*.html'; then
+            echo "::error::Rendered examples are stale. Run: sh scripts/render.sh experiments notebook experiments/*/"
+            exit 1
+          fi
+          echo "OK: rendered examples match their sources."
+
+      - name: Example registry is consistent
+        run: python scripts/validate_registry.py
 
       - name: manifest.md is up to date
         run: |

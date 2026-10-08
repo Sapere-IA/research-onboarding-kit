@@ -25,9 +25,9 @@ regenerable figures at write-up time.
    `results/<ID>/` directory and names that card ID — never an "expected" or
    placeholder value (`reference/research-integrity-policy.md`). `paper-trail`
    builds the claim → card → artifact table that checks this.
-2. **The author commits the claim.** Claude drafts and traces; the researcher owns
+2. **The author commits the claim.** The agent drafts and traces; the researcher owns
    every scientific claim and the decision to submit
-   (`reference/human-in-the-loop-policy.md`). Claude never submits or uploads.
+   (`reference/human-in-the-loop-policy.md`). The agent never submits or uploads.
 
 ## Building
 

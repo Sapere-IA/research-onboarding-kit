@@ -1,116 +1,65 @@
-# The experiment loop (full procedure)
+# The experiment loop
 
-This is the operational detail behind `SKILL.md`. The ⛔ marks are the two human
-gates. Steps 4–8 are the experiment path; infrastructure and analysis tasks
-branch at step 1.
+The operational detail behind `SKILL.md`. ⛔ marks the two human gates. Formats, rendering and feedback: `doc-format.md`.
 
-## 1. Classify the task
+## 1. Classify
 
-Use `classification-policy.md`.
+`classification-policy.md`:
 
-- **Infrastructure** (pipeline, library, eval code, data loader): take the
-  mini-SDD path — write an `infra-spec` (styled HTML,
-  `templates/infra-spec.html.template`: contract + acceptance tests) before
-  code; tests must pass before `done`. Not the rest of this loop.
-- **Analysis / writing**: produce an analysis report whose every number cites a
-  card or dataset ID. Not gated on the experiment loop — reading and plotting
-  stay friction-free.
-- **Experiment**: continue below.
+- **Infrastructure** (pipelines, loaders, eval code, metrics): write `specs/<module>/spec.md` from `infra-spec.md.template` (contract + acceptance tests) before code; render it and get approval; tests pass before `done`.
+- **Analysis / writing**: write `reports/<slug>.md` (or `experiments/<ID>/analysis.md`) from `analysis.md.template`; every number cites a card or dataset ID. Not gated — reading and plotting stay friction-free.
+- **Experiment**: continue.
 
-## 2. Draft the experiment card
+## 2. Draft the card
 
-From `templates/experiment-card.html.template` (see `experiment-card-format.md`).
-Fill: hypothesis, **exactly one** change under test, baseline, metrics + gate
-criteria, compute budget, artifacts to be produced.
+Copy `card.md.template` to `experiments/<ID>/card.md` and fill it: Summary, H1, **exactly one** C1, baseline, metrics and gates (M*, G*), setup, budget, plan. Keep to the budgets in `doc-format.md`.
 
-- If `PLAN.md` exists, the card must reference its phase/row (`plan-ref`). A card
-  that doesn't fit the plan is a **plan-change proposal**, not a card — raise it
-  with the researcher.
-- The `experiment-designer` agent refuses a card with more than one change under
-  test or with undeclared metrics.
-- Create the registry record (`status: draft`) and the experiment folder.
+- The card references its `PLAN.md` phase (`plan_ref`). A card that does not fit the plan is a plan-change proposal — raise it.
+- The `experiment-designer` refuses a card with more than one change, undeclared gates, or no baseline.
+- Add the registry record (`status: draft`), then render: `sh scripts/render.sh experiments/<ID>/card.md`.
 
 ## 3. ⛔ Researcher approves the card
 
-No config, launcher, or run before approval. Approval covers the single change,
-the declared gate criteria, and the compute budget. On approval, set
-`status: approved` in the card and registry; the metrics/gate are now frozen for
-this run (changing them later needs a dated decision —
-`reference/research-integrity-policy.md`).
+Point the researcher at `experiments/<ID>/card.html`. They review it there and save `card.feedback.md` (or answer in chat). Apply the feedback; an approving file with no change/reject items is the approval. Set `status: approved` on the card and in the registry, add a notebook entry. The change, gates and budget are now frozen; changing them later needs a dated decision (`reference/research-integrity-policy.md`).
 
-A blocking hook (`block-unapproved-launch.sh`) is available; advisory by default.
+No config, launcher or run before this. The `block-unapproved-launch` hook can enforce it.
 
-## 4. Implement run artifacts
+## 4. Build run artifacts
 
-- **Config** (`configs/<ID>.yaml`) — the machine-readable spec; one config = one
-  card. Every result-affecting knob lives here.
-- **Launcher** (`launchers/<ID>.sh`) — carries the ID, output dir, resume flag,
-  and scheduler block.
-- **Smoke test** — the smallest run proving the job won't crash. It **must pass
-  on the local machine** before anything is queued. Record the command and pass
-  date on the card and set `smoke_passed` in the registry.
+- **Config** `configs/<ID>.yaml` — every result-affecting knob; one config per card.
+- **Launcher** `launchers/<ID>.sh` — ID, output dir, resume flag, scheduler block.
+- **Smoke test** — the smallest run proving the job will not crash; it **must pass locally** first. Record the date in `smoke_passed` (card + registry) and as a Runs row.
 
-If the project hasn't defined a smoke test, that's a TODO gate: cluster
-submissions are blocked until it's defined (`reference/compute-budget-policy.md`).
+No smoke test defined yet → cluster submissions stay blocked until it is (`reference/compute-budget-policy.md`).
 
 ## 5. Launch
 
-- If Claude can run it locally within the stated budget, it may
-  (`reference/human-in-the-loop-policy.md`).
-- If it needs the cluster, money, or the human, Claude hands over the **exact
-  submission command** and expected output artifacts (the `cluster-ops` pack
-  holds the project recipe), sets `status: launched`, and **waits**. No
-  fabricated results; no "expected" numbers written into the card.
+- Cheap and local within the budget: the agent may run it (`reference/human-in-the-loop-policy.md`).
+- Cluster, paid or long: hand over the **exact command**, the output location and what to paste back (job ID or "done") — the `cluster-ops` pack holds the recipe. Add the Runs row, set `launched`, and **wait**. Never write expected numbers.
 
-## 6. Collect & analyze
+## 6. Collect and analyze
 
-When results exist (check `results/<ID>/`):
+When `results/<ID>/` has outputs:
 
-- Verify outputs against the card's declared metrics, including sanity /
-  calibration / seed-variance checks.
-- Run the **skeptic** (`skeptic-checklist.md`) — it tries to *refute* the verdict
-  before it is proposed: stats validity, calibration, leakage, baseline
-  fairness, claim–artifact traceability.
-- Fill the card's **Results** section from real outputs. Log failures and
-  negative results with the same discipline as wins; set `status: analyzed`.
+- Check them against the declared M*/G*, with sanity, calibration and seed-variance checks.
+- Run the **skeptic** (`skeptic-checklist.md`): it tries to refute the result and returns `BLK-n` / `NBK-n` lines for the Skeptic section. Blocking concerns go back to the analyst first.
+- Fill Results from real outputs, write the proposed verdict, set `analyzed`, render.
+
+Failures and negative results get the same discipline: a Runs row and an honest verdict.
 
 ## 7. ⛔ Verdict confirmed
 
-Claude proposes the verdict against the gate (pass / fail / inconclusive); the
-researcher (or named approver) confirms. Only a confirmed verdict updates the
-plan gate and may propose a decision-log entry. Claude never declares a gate
-passed on its own.
+The researcher reads the card page (gate box: "Confirm verdict / Dispute verdict") and hands back feedback. Only a confirmed verdict sets `done` (or `failed`) with its `gate_result`, moves a plan gate, and may propose a decision-log entry.
 
-## 8. Scribe updates
+## 8. Record
 
-- Append a dated `NOTEBOOK.html` entry (what ran, what happened, what's next).
-- Update the registry row (status, gate_result, actual_cost).
-- A card is not `done` while its artifacts (plots, metrics files) are missing or
-  its registry row is stale.
-- If the `paper-draft` pack is installed, **append an experiment subsection** to
-  `paper/sections/experiments.tex` for the just-confirmed verdict — the single
-  change under test and the result, numbers taken only from `results/<ID>/` and
-  citing the card. Negative/inconclusive results are written too.
+- Newest-first `NOTEBOOK.md` entry (what ran, what happened, what's next; link the card).
+- Registry row: status, `gate_result`, `actual_cost`, `code_version`. Run `python scripts/validate_registry.py`.
+- Re-render the card and the registry. A card is not `done` while its artifacts are missing or the registry is stale.
+- With the `paper-draft` pack: append an experiment subsection to `paper/sections/experiments.tex` — numbers only from `results/<ID>/`, citing the card; negative results too.
 
-## Paper write-up (if the `paper-draft` pack is installed)
+## Rules that span the loop
 
-The paper in `paper/` grows with the work, not at the end (see the `paper-draft`
-skill). Beyond the per-experiment subsection above: draft the introduction and
-related-work after the literature review (with the references the `literature-scout`
-found), the methodology once `PLAN.md` fixes the metrics and gates, and aggregate
-`results.tex` as confirmed experiments accumulate. Every number cites a confirmed
-card (`paper-trail`); the author commits each claim
-(`reference/human-in-the-loop-policy.md`).
-
-## Iteration rule
-
-A new experiment varying the same axis gets a **new card**
-(`E12_<slug>__v2`, with `supersedes: E12_<slug>`). Editing a completed card's
-design section is forbidden; corrections append.
-
-## Hand-over format (cross-session sync)
-
-When handing a job to the human, give: (1) the exact command, (2) the files/dir
-the run will produce, (3) what to paste back (job ID, or "done"). The `launched`
-status is the synchronization point — on the next session, reconcile against
-`results/` (`reference/session-recovery.md`).
+- **Iteration:** a new run varying the same axis is a new card (`E012_slug__v2`, `supersedes: E012_slug`). A completed card's design sections never change; corrections append.
+- **Hand-over:** command, output location, what to paste back. `launched` is the synchronization point; on resume, reconcile against `results/` (`reference/session-recovery.md`).
+- **End of session:** run the `closing` skill — it updates the artifacts and writes the `## Resume here` handoff in `NOTEBOOK.md`.

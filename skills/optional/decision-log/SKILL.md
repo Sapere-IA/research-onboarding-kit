@@ -43,7 +43,7 @@ in versioned files instead of chat history.
 4. **Propose the exact text; do not write without approval.**
 5. On approval, append below the marker, newest first.
 6. If it contradicts an earlier entry, mark the old one `superseded`, don't delete.
-7. If load-bearing for every session, also propose a one-line `CLAUDE.md` hard
+7. If load-bearing for every session, also propose a one-line `AGENTS.md` hard
    rule (`reference/memory-policy.md`).
 
 ## Output artifact

@@ -1,80 +1,56 @@
-# Expected target-project structure after onboarding
+# Expected project structure after onboarding
 
-This is what a repository looks like once the RDD harness is installed. Optional
-pieces (decision logs, optional packs, hooks) appear only when selected.
+A repository with the RDD harness installed. Optional pieces (decision logs, packs, hooks, `paper/`) appear only when selected. `<harness-dir>` is `.claude/` for Claude Code (other harnesses: `reference/harness-primitives.md`). `*.html` pages are rendered from the markdown next to them and gitignored unless the project commits them.
 
 ```text
 target-project/
-├── CLAUDE.md                         # concise, project-specific; links out
-├── PLAN.md                           # objectives, phases, gates, experiment matrix (canonical, Claude-facing)
-├── PLAN.html                         # human-facing twin of PLAN.md (styled; links experiments/research.css)
+├── AGENTS.md                         # project instructions for every coding agent (short; links out)
+├── CLAUDE.md                         # `@AGENTS.md` import stub (Claude Code only)
+├── PLAN.md                           # objectives, phases, gates, experiment matrix (doc: plan)
+├── PLAN.html                         # rendered review page
 ├── decisions/
 │   ├── answers.md                    # recorded onboarding answers
-│   ├── architecture-decisions.md     # (if decision-log pack selected)
-│   └── rejected-options.md           # (if decision-log pack selected)
+│   └── architecture-decisions.md …   # (decision-log pack)
 ├── experiments/
-│   ├── research.css  research.js     # shared design system (copied from the kit)
-│   ├── registry.json                 # MACHINE STATE — validation source of truth
-│   ├── registry.html                 # human-facing dashboard
+│   ├── README.md                     # layout + registry schema
+│   ├── registry.json                 # MACHINE STATE — status source of truth
+│   ├── registry.html                 # dashboard, rendered from registry.json
 │   └── E001_<slug>/
-│       ├── card.html                 # the experiment card
-│       └── analysis-report.html      # (optional, analysis tasks)
-├── specs/                            # (only when infra/spec tasks occur)
-│   ├── research.css  research.js     # copied so the HTML specs render
-│   └── <module>/
-│       └── infra-spec.html           # mini-SDD contract + acceptance tests (styled HTML)
+│       ├── card.md                   # THE experiment: one doc with sections
+│       ├── card.html                 # rendered review page
+│       └── analysis.md               # (optional) analysis report
 ├── notebook/
-│   ├── research.css  research.js
-│   └── NOTEBOOK.html                 # reverse-chronological lab notebook
-├── paper/                            # (if paper-draft pack selected) progressive LaTeX write-up
-│   ├── main.tex                      # entry point; \input{}s the sections
-│   ├── references.bib                # citations (literature-scout adds; paper-trail verifies)
-│   └── sections/                     # one file per section; filled as the research advances
-├── configs/    E001_<slug>.yaml      # one config = one card
-├── launchers/  E001_<slug>.sh        # carries ID, output dir, resume, scheduler block
-├── results/    E001_<slug>/          # real run outputs (cards reconcile against these)
-├── data/
-│   └── frozen-manifest.json          # (if any artifacts are frozen)
+│   └── NOTEBOOK.md                   # newest-first lab notebook; `## Resume here` on top
+├── specs/<module>/spec.md            # (infra tasks) mini-SDD contract + acceptance tests
+├── reports/<slug>.md                 # (analysis tasks) cited reports
+├── paper/                            # (paper-draft pack) progressive LaTeX write-up
+├── configs/E001_<slug>.yaml          # one config = one card
+├── launchers/E001_<slug>.sh          # ID, output dir, resume, scheduler block
+├── results/E001_<slug>/              # real run outputs (cards reconcile against these)
+├── data/frozen-manifest.json         # (if any artifact is frozen)
 ├── scripts/
-│   ├── validate_structure.py
-│   ├── validate_registry.py
-│   ├── capture_environment.py
-│   └── check_frozen.py
-└── .claude/
-    ├── agents/
-    │   ├── research-lead.md  experiment-designer.md  analyst.md
-    │   ├── skeptic.md  scribe.md  literature-scout.md
+│   ├── render.sh  render.ps1         # markdown → review pages (no runtime needed)
+│   ├── validate_structure.py  validate_registry.py  check_placeholders.py
+│   └── capture_environment.py  check_frozen.py
+└── <harness-dir>/
+    ├── agents/                       # research-lead, experiment-designer, analyst, skeptic, scribe, literature-scout
     ├── skills/
-    │   ├── research-workflow/        # core skill + supporting docs + templates/
-    │   └── <optional packs>/         # only those selected
-    ├── context/
-    │   └── project-map.md
-    ├── hooks/                        # only if hooks approved
-    └── settings.json                 # only if hooks/MCPs configured
+    │   ├── research-workflow/        # core skill + doc-format.md + templates/{docs,render}/
+    │   ├── bro/  closing/  rdd-update/
+    │   └── <optional packs>/
+    ├── context/project-map.md
+    ├── hooks/                        # only if hooks were approved
+    ├── settings.json                 # (Claude Code) only if hooks/MCPs are configured
+    └── rdd-kit-manifest.json         # kit version, harness block, installed-file hashes
 ```
 
-## Format conventions (mirrors the SDD kit's two-tier model)
+## Format conventions
 
-- **Styled HTML** (shared `research.css`/`research.js`): the experiment cards,
-  `registry.html`, `NOTEBOOK.html`, analysis reports, infra-specs, and any other
-  human-facing spec/design/proposal doc (generic `doc.html` template). **Every
-  document a human is meant to read is styled HTML**, never plain Markdown — copy
-  `research.css`/`research.js` next to a new artifact so its link resolves. Open
-  them in a browser.
-- **Machine state**: `experiments/registry.json` is authoritative for status;
-  `validate_registry.py` checks it against the cards and `results/`.
-- **Markdown** (Claude-facing operational files only): `CLAUDE.md`, `PLAN.md`,
-  skills, agents, decisions, project map. `PLAN.md` is canonical (Claude edits it)
-  but also ships a human-facing styled twin, `PLAN.html` — keep the two in sync,
-  exactly like the `README.md`/`README.html` pair.
-- **Text**: `configs/*.yaml`, `launchers/*.sh`.
-- **LaTeX** (paper sources, only with the `paper-draft` pack): `paper/*.tex` +
-  `references.bib`. The compiled PDF is the human-facing output, so the paper is
-  authored in LaTeX rather than the HTML design system; the harness drafts these
-  progressively and every reported number still traces to a card.
+- **Markdown with frontmatter** for every human-facing document (cards, plan, notebook, analysis, infra-specs, notes). It is the source of truth; `scripts/render.sh` turns each into an interactive page for review, and the researcher's verdicts come back as `<name>.feedback.md` (`<harness-dir>/skills/research-workflow/doc-format.md`).
+- **Machine state**: `experiments/registry.json`; `validate_registry.py` checks it against card frontmatter and `results/`.
+- **Markdown, agent-facing**: `AGENTS.md`, skills, agents, decisions, project map.
+- **Text**: `configs/*.yaml`, `launchers/*.sh`. **LaTeX**: `paper/` (paper-draft pack).
 
-## Not installed into the target project
+## Not installed
 
-- The kit's rendered reference example (`experiments/E001_example-*/`).
-- `templates/`, `reference/`, `hooks/examples/`, `agents/` from the kit root —
-  only their adapted copies under `.claude/` and the project tree are installed.
+The kit's examples (`experiments/E00*_example-*`, `notebook/NOTEBOOK.md`, `configs/`, `launchers/`, `results/`, `data/`) and the kit-root `templates/`, `reference/`, `hooks/examples/`, `agents/` — only their adapted copies.

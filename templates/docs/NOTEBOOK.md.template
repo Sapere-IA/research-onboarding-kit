@@ -1,0 +1,24 @@
+---
+doc: notebook
+title: Lab notebook — {{PROJECT_NAME}}
+---
+
+## Resume here
+
+<!-- Written by the closing skill; replaced (never appended) at each close. Points at artifacts, never duplicates them. -->
+
+- **Updated:** {{DATE}}
+- **Active:** none yet — next candidate: the baseline-reproduction card.
+- **Next action:** draft the first card.
+- **Waiting on:** nothing.
+- **Uncommitted work:** none.
+
+## Entries
+
+<!-- Newest first. One entry per state change (approved, launched, results in, verdict confirmed, failed, abandoned):
+### YYYY-MM-DD — E012_slug — what happened
+2–4 lines: what ran, what happened, what's next. Link the card: experiments/E012_slug/card.html. Never an entry for a run that did not happen. -->
+
+### {{DATE}} — Harness installed
+
+RDD harness installed. Plan: `PLAN.md`. Registry: `experiments/registry.json`.

@@ -1,69 +1,44 @@
 ---
 name: research-workflow
-description: Run the Research Driven Development (RDD) experiment loop for Claude Code. Use when starting, designing, launching, or analyzing an experiment, or when the project CLAUDE.md says a task follows RDD.
+description: Run the Research Driven Development (RDD) experiment loop. Use when starting, designing, launching or analyzing an experiment, writing an infra-spec or analysis report, or when AGENTS.md says a task follows RDD.
 argument-hint: "[experiment-id-or-task-description]"
 ---
 
-# RDD Workflow Skill
+# RDD workflow
 
-Use this skill when the researcher asks to work through an experiment, or when the
-project `CLAUDE.md` says a task follows RDD. The central artifact is the
-**experiment card**; the loop has two human gates (⛔).
+The central artifact is the **experiment card**: one markdown file, `experiments/<ID>/card.md`, holding the whole experiment in sections. The loop has two human gates (⛔).
 
-## Required supporting files
+## Supporting files
 
-Read the relevant file before acting:
+Read the one you need before acting:
 
-- `workflow.md` — the full experiment loop, step by step.
-- `classification-policy.md` — decide infrastructure / experiment / analysis.
-- `experiment-state-machine.md` — card statuses and transitions.
-- `experiment-card-format.md` — when drafting or editing a card.
-- `skeptic-checklist.md` — when verifying results before proposing a verdict.
-- `examples.md` — when an output example is needed.
+- `workflow.md` — the loop, step by step.
+- `classification-policy.md` — infrastructure / experiment / analysis.
+- `experiment-state-machine.md` — card statuses and who may move them.
+- `doc-format.md` — templates, rendering, review feedback, conciseness, markdown conventions.
+- `skeptic-checklist.md` — before proposing a verdict.
+- `examples.md` — worked examples.
+- `templates/docs/` — document templates; `templates/render/` — the page renderer's assets.
 
 ## Core rules
 
-1. **Classify first.** Infrastructure → mini-SDD path (`infra-spec` + tests).
-   Experiment → this loop. Analysis/writing → cited report.
-   - **Every human-facing artifact is styled HTML**, never plain Markdown: the
-     experiment card (`experiment-card.html`), infra-spec (`infra-spec.html`),
-     analysis report (`analysis-report.html`), registry, notebook, and any other
-     spec/design/proposal doc you produce for a human (`doc.html` template). They
-     all share `research.css`/`research.js` — copy those next to a new artifact so
-     its `../research.css` link resolves. Only Claude-facing operational files
-     (`CLAUDE.md`, skills, agents, project map, decision logs) stay Markdown.
-2. **No config, launcher, or run before the card is approved (⛔ gate 1).**
-3. **Smoke test must pass locally before any expensive/cluster launch.**
-4. **Results are filled only from real outputs.** No fabricated or "expected"
-   numbers. Every run logged, including failures and negatives.
-5. **Claude proposes the verdict; the researcher confirms it (⛔ gate 2).** Claude
-   never declares a plan gate passed.
+1. **Classify first.** Infrastructure → `infra-spec` + tests. Experiment → this loop. Analysis → cited report.
+2. **Markdown is the source; the page is rendered.** Write `.md` from `templates/docs/`, render with `sh scripts/render.sh <file>`, never edit the HTML. The researcher reviews on the page and hands back `<name>.feedback.md` (`doc-format.md`).
+3. **One change per card; gate declared before launch.**
+4. **No config, launcher or run before card approval (⛔ gate 1).** Smoke test passes locally before any expensive or cluster launch.
+5. **Results only from real outputs.** Every run logged in the card's Runs table, failures and negatives included.
+6. **The agent proposes the verdict; the researcher confirms it (⛔ gate 2).** The agent never declares a gate passed.
+7. **Concise.** Summary ≤ 3 sentences, one sentence per item, each fact once (`doc-format.md` § Conciseness).
 
 ## Standard execution
 
-1. Identify the task / experiment (`$ARGUMENTS`).
-2. Classify it (`classification-policy.md`).
-3. For an experiment: draft the card from the template (`experiment-card-format.md`).
-4. ⛔ Stop for card approval.
-5. After approval: build config + launcher + smoke test; run the smoke test.
-6. Launch (cheap-local within budget) or hand over to the human (cluster/paid);
-   set status `launched`; wait — do not fabricate results.
-7. When results return: verify against the declared gate; run the skeptic
-   (`skeptic-checklist.md`); fill Results; propose a verdict.
-8. ⛔ Stop for verdict confirmation.
-9. Scribe updates the notebook and registry; mark `done` only when artifacts
-   exist and the registry row is current.
-
-## Argument
-
-Use `$ARGUMENTS` as the experiment ID, card slug, or task description. If empty,
-select the next eligible card from `experiments/registry.json` (e.g. an
-`approved` card awaiting launch, or a `launched` card whose `results/` now has
-outputs).
+1. Identify the task (the skill argument). If empty, pick the next eligible card from `experiments/registry.json`: an `approved` card awaiting launch, a `launched` card whose `results/<ID>/` now has outputs, or a card with a pending `card.feedback.md`.
+2. Classify it.
+3. Experiment: draft the card, add the registry record (`draft`), render, ⛔ stop for approval.
+4. After approval: config, launcher, smoke test; launch within budget or hand over; `launched`; wait.
+5. Results in: verify against the gates, skeptic pass, fill Results, propose the verdict, `analyzed`, render, ⛔ stop for confirmation.
+6. Confirmed: notebook entry, registry row, `done` (or `failed`); re-render.
 
 ## State lives in artifacts
 
-`experiments/registry.json` is the source of truth for status; the card carries
-the detail; `notebook/NOTEBOOK.html` carries the narrative. After any
-resume/compaction, reconcile the registry and cards against `results/` before
-continuing — artifacts win (`reference/session-recovery.md`).
+`registry.json` is the status source of truth; the card's frontmatter mirrors it; `NOTEBOOK.md` carries the narrative. After any resume or compaction, reconcile the registry and cards against `results/` — artifacts win (`reference/session-recovery.md`). Before stopping, run the `closing` skill.

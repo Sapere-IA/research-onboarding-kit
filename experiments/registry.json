@@ -7,20 +7,43 @@
       "id": "E001_example-baseline",
       "title": "Reproduce the published CNN baseline on CIFAR-10",
       "status": "done",
-      "plan_ref": "PLAN.md §1 (Phase 1 — baseline reproduction)",
+      "plan_ref": "PLAN.md § P1",
       "supersedes": null,
-      "card_path": "experiments/E001_example-baseline/card.html",
+      "card_path": "experiments/E001_example-baseline/card.md",
       "config": "configs/E001_example-baseline.yaml",
       "launcher": "launchers/E001_example-baseline.sh",
       "results_dir": "results/E001_example-baseline/",
       "code_version": "a1b2c3d",
       "gate_result": "pass",
       "smoke_passed": "2026-06-11",
-      "frozen_inputs": ["cifar10_test_frozen"],
+      "frozen_inputs": [
+        "cifar10_test_frozen"
+      ],
       "budget": "2 GPU-h",
       "actual_cost": "1.7 GPU-h",
       "created": "2026-06-10",
       "updated": "2026-06-12"
+    },
+    {
+      "id": "E002_example-label-smoothing",
+      "title": "Label smoothing on the baseline",
+      "status": "draft",
+      "plan_ref": "PLAN.md § P2",
+      "supersedes": null,
+      "card_path": "experiments/E002_example-label-smoothing/card.md",
+      "config": null,
+      "launcher": null,
+      "results_dir": null,
+      "code_version": null,
+      "gate_result": "pending",
+      "smoke_passed": null,
+      "frozen_inputs": [
+        "cifar10_test_frozen"
+      ],
+      "budget": "2 GPU-h",
+      "actual_cost": null,
+      "created": "2026-06-13",
+      "updated": "2026-06-13"
     }
   ]
 }

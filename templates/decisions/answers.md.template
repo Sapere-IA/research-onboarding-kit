@@ -4,6 +4,11 @@ Recorded answers to the onboarding interview (`questions.md`). This is the
 durable record of how the harness was configured. Fill every line; mark unknowns
 as `TODO`.
 
+## 0. Harness
+- Primary harness and its directory (`<harness-dir>`):
+- Additional harnesses and their directories (or none):
+- Deviations from `reference/harness-primitives.md` found during install:
+
 ## A. Project identity
 - Research domain & one-sentence goal:
 - Prior publication / baseline (and where it lives — papers, code, checkpoints):
@@ -16,7 +21,7 @@ as `TODO`.
 
 ## C. Technical stack
 - Languages / frameworks / environment (conda/venv/container) / test runner:
-- Where code runs (local / cluster + scheduler / cloud / mixed); GPU on Claude's machine; who launches long jobs:
+- Where code runs (local / cluster + scheduler / cloud / mixed); GPU on the agent's machine; who launches long jobs:
 - Experiment tracker already in use (W&B / MLflow / TensorBoard / none):
 
 ## D. Data
@@ -35,6 +40,9 @@ as `TODO`.
 - Optional packs installed:
 - Optional packs declined:
 - Hooks: none / advisory only / advisory + blocking:
+- Rendered pages (`*.html`): gitignored (default) / committed:
+- Dependency-freshness strictness (result-affecting required / all required / advisory):
+- MCPs configured / CLIs available (authenticated yes/no only):
 - Existing conventions adopted instead of kit templates (notebook/ADRs/style):
 
 ## Open TODOs

@@ -1,0 +1,18 @@
+---
+doc: doc
+title: {{TITLE}}
+status: draft
+created: {{DATE}}
+---
+
+## Summary
+
+<!-- ≤ 3 sentences. Shown as "At a glance". Use this template for any human-facing note, design or proposal without a more specific template. -->
+
+{{SUMMARY}}
+
+## {{SECTION}}
+
+<!-- One screen per section; tables for enumerable facts; IDs ("D1: …") for items the researcher should accept, change or comment on. -->
+
+{{CONTENT}}

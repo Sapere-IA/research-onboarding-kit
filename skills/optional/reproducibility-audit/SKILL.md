@@ -38,8 +38,10 @@ Work the checklist for the target card:
 6. **Resumability** — the run resumes from its last checkpoint, or the card states
    why not.
 
-Produce an **audit report** (use `analysis-report.html.template`): per-item
-pass/fail, what's missing, and the exact fix for each gap.
+Produce an **audit report** (`reports/repro-<ID>.md` from
+`<harness-dir>/skills/research-workflow/templates/docs/analysis.md.template`; table cells `!ok` / `!blocking`): per-item
+pass/fail, what's missing, and the exact fix for each gap. Render it with
+`sh scripts/render.sh`.
 
 ## Output artifact
 

@@ -1,303 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Research Onboarding Kit — Documentation</title>
-  <link rel="stylesheet" href="templates/assets/research.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Onboarding Kit — Documentation</title>
+<meta name="description" content="Install and use a Research Driven Development harness with any coding agent.">
+<script>(function(){try{var t=localStorage.getItem('rdd-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root {
+  --bg: #f8f6ee; --surface: #ffffff; --surface-2: #f2efe0; --line: #d9d3c0;
+  --text: #171a1b; --text-2: #454a4c; --muted: #5f6466;
+  --accent: #eefb87; --accent-ink: #171a1b; --ok: #b9e15b; --info: #93bdf0; --bad: #e0764c; --warn: #f3c969;
+  --font: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --radius: 14px; --radius-lg: 22px; color-scheme: light;
+}
+:root[data-theme="dark"] { --bg:#141617; --surface:#1d2021; --surface-2:#24282a; --line:#34383a; --text:#f2efe0; --text-2:#c9c5b4; --muted:#9a9e9f; --accent:#eefb87; --accent-ink:#171a1b; --ok:#b9e15b; --info:#93bdf0; --bad:#f08a62; --warn:#f3c969; color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141617; --surface:#1d2021; --surface-2:#24282a; --line:#34383a; --text:#f2efe0; --text-2:#c9c5b4; --muted:#9a9e9f; --accent:#eefb87; --accent-ink:#171a1b; --ok:#b9e15b; --info:#93bdf0; --bad:#f08a62; --warn:#f3c969; color-scheme: dark; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-wrap: break-word; }
+h1, h2, h3 { font-weight: 600; font-stretch: 80%; letter-spacing: -.015em; line-height: 1.1; text-wrap: balance; margin: 0; }
+p, ul, ol { margin: 0 0 14px; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+strong { font-weight: 600; }
+a { color: inherit; text-decoration: underline; text-decoration-color: var(--muted); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { background: var(--accent); color: var(--accent-ink); text-decoration-color: var(--accent-ink); }
+em.hl { font-style: normal; background: linear-gradient(transparent 58%, var(--accent) 58%); padding: 0 .06em; }
+:root[data-theme="dark"] em.hl { background: none; color: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) em.hl { background: none; color: var(--accent); } }
+code { font-family: var(--mono); font-size: .84em; background: var(--surface-2); border-radius: 6px; padding: .08em .35em; overflow-wrap: anywhere; }
+pre { font-family: var(--mono); font-size: 14px; line-height: 1.55; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; overflow-x: auto; margin: 0 0 16px; color: var(--text-2); }
+pre code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+
+/* top bar */
+.bar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1180px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 14px; }
+.brand { font-weight: 600; font-stretch: 80%; font-size: 19px; text-decoration: none; white-space: nowrap; }
+.brand b { background: var(--accent); color: var(--accent-ink); border-radius: 6px; padding: 0 6px; margin-right: 4px; font-weight: 600; }
+.bar nav { display: flex; gap: 4px; margin-left: auto; }
+@media (max-width: 560px) { .bar nav a.opt { display: none; } .brand { font-size: 17px; } }
+@media (max-width: 420px) { .bar-in { gap: 8px; } .brand { font-size: 15px; } .bar nav a { padding: 4px 6px; } .theme { padding: 4px 9px; } }
+.bar nav a { font-size: 15px; text-decoration: none; padding: 4px 10px; border-radius: 999px; color: var(--text-2); }
+.bar nav a:hover { background: var(--surface-2); color: var(--text); }
+.theme { font: inherit; font-size: 14px; cursor: pointer; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.theme:hover { border-color: var(--text); }
+
+/* tags, notes, tables, cards */
+.tag { display: inline-block; background: var(--tone, var(--accent)); color: var(--accent-ink); font-size: 14px; font-weight: 600; line-height: 1.5; border-radius: 999px; padding: 2px 12px; white-space: nowrap; }
+.tag.ok { --tone: var(--ok); } .tag.info { --tone: var(--info); } .tag.bad { --tone: var(--bad); } .tag.warn { --tone: var(--warn); }
+.tag.line { background: none; border: 1px solid var(--line); color: var(--text-2); font-weight: 400; }
+.note { background: color-mix(in srgb, var(--tone, var(--ok)) 16%, var(--surface)); border: 1px solid var(--line); border-left: 4px solid var(--tone, var(--ok)); border-radius: var(--radius); padding: 14px 18px; margin: 0 0 18px; color: var(--text); }
+.note.info { --tone: var(--info); } .note.warn { --tone: var(--warn); } .note.bad { --tone: var(--bad); }
+.note > :last-child { margin-bottom: 0; }
+.tw { overflow-x: auto; margin: 0 0 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 1.5; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; }
+td code { white-space: nowrap; overflow-wrap: normal; }
+.tw.wrapcode td code { white-space: normal; overflow-wrap: anywhere; }
+.cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin: 0 0 18px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px 22px; }
+.card h3 { font-size: 21px; margin-bottom: 6px; }
+.card p { margin: 0; color: var(--text-2); font-size: 16px; }
+.prompt { position: relative; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 14px 18px; font-family: var(--mono); font-size: 14.5px; line-height: 1.55; margin: 0 0 16px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin: 0 0 14px; }
+details > summary { cursor: pointer; list-style: none; padding: 11px 16px; font-weight: 600; display: flex; gap: 10px; align-items: baseline; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "+"; font-family: var(--mono); color: var(--muted); }
+details[open] > summary::before { content: "\2212"; }
+details > .in { padding: 0 16px 6px; }
+details .tw, details pre { margin-bottom: 12px; }
+@media print { .bar, .theme { display: none; } body { background: #fff; color: #000; } details > .in { display: block; } }
+/* documentation page */
+.shell { max-width: 1180px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 48px; }
+@media (min-width: 1024px) { .shell { grid-template-columns: 240px minmax(0, 1fr); } }
+.toc { margin: 20px 0 0; }
+.toc ol { list-style: none; padding: 0 0 8px; margin: 0; }
+.toc li { margin: 0; }
+.toc .grp { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 12px 10px 4px; }
+.toc a { display: flex; gap: 8px; text-decoration: none; font-size: 15px; line-height: 1.35; padding: 5px 10px; border-radius: 8px; color: var(--text-2); }
+.toc a b { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); min-width: 22px; padding-top: 2px; }
+.toc a:hover { background: var(--surface-2); color: var(--text); }
+.toc a.on { background: var(--accent); color: var(--accent-ink); }
+.toc a.on b { color: var(--accent-ink); }
+@media (min-width: 1024px) {
+  .toc { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 80px); overflow-y: auto; background: none; border: 0; margin-top: 32px; }
+  .toc > summary { display: none; }
+  .toc > .in { padding: 0; }
+}
+.doc { min-width: 0; max-width: 780px; padding: 36px 0 80px; }
+.doc header h1 { font-size: clamp(40px, 7vw, 64px); font-stretch: 76%; letter-spacing: -.03em; line-height: 1; margin: 14px 0 14px; }
+.doc header .lead { font-size: 19px; color: var(--text-2); margin-bottom: 18px; }
+.doc section { border-top: 1px solid var(--line); padding-top: 26px; margin-top: 30px; }
+.doc h2 { font-size: clamp(27px, 4vw, 34px); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; }
+.doc h2 .n { font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--muted); font-stretch: 100%; letter-spacing: 0; }
+.doc h3 { font-size: 20px; font-stretch: 88%; margin: 22px 0 8px; }
+.doc p, .doc li { color: var(--text); }
+.states { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; font-family: var(--mono); font-size: 14px; }
+.states span { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.states span.gate { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.states i { font-style: normal; color: var(--muted); }
+.see { font-size: 15px; color: var(--muted); }
+</style>
 </head>
 <body>
-<div class="page-wrap">
-  <nav class="sidebar" aria-label="Table of contents">
-    <div class="sidebar-brand">
-      <div class="sidebar-brand-name">RDD KIT
-        <span>documentation</span>
-      </div>
-    </div>
-    <p class="sidebar-title">Contents</p>
-    <div id="toc-list"></div>
+
+<header class="bar"><div class="bar-in">
+  <a class="brand" href="README.html"><b>RDD</b>Research Onboarding Kit</a>
+  <nav aria-label="Site">
+    <a href="README.html">Overview</a>
+    <a class="opt" href="experiments/E002_example-label-smoothing/card.html">Example card</a>
   </nav>
+  <button class="theme" id="theme" type="button">Theme</button>
+</div></header>
 
-  <div class="main-content">
-    <header class="spec-header">
-      <h1>Research Onboarding Kit — Documentation</h1>
-      <p>Full operational documentation for the Research Driven Development (RDD)
-         harness. Quick start is in <a href="README.html">README.html</a>; deeper
-         theory and policy are in <code>reference/</code>.</p>
-    </header>
+<div class="shell">
+<details class="toc" id="toc">
+  <summary>Contents</summary>
+  <div class="in"><ol>
+    <li class="grp">Start</li>
+    <li><a href="#what-is-rdd"><b>1</b>What is RDD</a></li>
+    <li><a href="#installation"><b>2</b>Installation</a></li>
+    <li><a href="#harness-support"><b>3</b>Harness support</a></li>
+    <li><a href="#daily-workflow"><b>4</b>Daily workflow</a></li>
+    <li><a href="#lifecycle"><b>5</b>Card lifecycle</a></li>
+    <li class="grp">Documents</li>
+    <li><a href="#documents"><b>6</b>Documents and review page</a></li>
+    <li><a href="#registry"><b>7</b>The registry</a></li>
+    <li class="grp">The harness</li>
+    <li><a href="#roles"><b>8</b>Roles</a></li>
+    <li><a href="#skills"><b>9</b>Skills</a></li>
+    <li><a href="#hooks"><b>10</b>Hooks</a></li>
+    <li><a href="#mcp"><b>11</b>MCPs and CLIs</a></li>
+    <li><a href="#policies"><b>12</b>Policies</a></li>
+    <li><a href="#updating"><b>13</b>Updating</a></li>
+    <li class="grp">Reference</li>
+    <li><a href="#configuration"><b>14</b>Configuration</a></li>
+    <li><a href="#files"><b>15</b>Kit file reference</a></li>
+    <li><a href="#prompts"><b>16</b>Prompts</a></li>
+  </ol></div>
+</details>
 
-    <main>
-      <section id="what-is-rdd">
-        <h2>1. What is RDD</h2>
-        <p>Research Driven Development is the research analog of Spec Driven Development.
-           SDD's central object is the feature spec; RDD's is the <strong>experiment</strong>.
-           Research code fails differently from product code — not by crashing, but by
-           producing a number that is wrong in a way that looks right. RDD structures work so
-           that the honest, reproducible path is the cheapest one. See
-           <code>reference/rdd-theory.md</code>.</p>
-      </section>
+<main class="doc">
+<div style="margin-bottom:12px"><span class="tag">Documentation · v2.0.0</span></div>
+<h1>Research Onboarding Kit</h1>
+<p class="lead">How to install a Research Driven Development harness and use it day to day. For an overview, see the <a href="README.html">landing page</a>.</p>
 
-      <section id="what-this-kit-is">
-        <h2>2. What this kit is</h2>
-        <p>A reusable template that, through an onboarding interview, produces a
-           project-specific configuration. It is local-first, human-gated, and
-           artifact-centric. It never copies generic rules without adapting them; missing
-           decisions are asked, not assumed; unknowns become TODOs, never invented values.</p>
-      </section>
+<section id="what-is-rdd">
+  <h2><span class="n">1</span>What is RDD</h2>
+  <p>Research Driven Development applies the spec-first discipline of the <a href="https://github.com/Sapere-IA/sdd-onboarding-kit">SDD kit</a> to research. The central object is the <strong>experiment card</strong>, not a feature spec. A card tests one hypothesis with <strong>exactly one change</strong> against a baseline, with metrics and gates declared <em>before</em> launch.</p>
+  <p>Two human gates sit where research goes expensively or dishonestly wrong: <strong>⛔ approving the card</strong>, before any compute is spent, and <strong>⛔ confirming the verdict</strong>, before any claim is made. Everything else stays friction-free: reading, plotting, drafting and infrastructure work.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Failure mode</th><th>Countermeasure</th></tr></thead>
+    <tbody>
+      <tr><td>Simultaneous changes</td><td>One change per card (<code>C1</code>)</td></tr>
+      <tr><td>Mutated or leaked eval data</td><td>Frozen manifest + <code>check_frozen.py</code></td></tr>
+      <tr><td>Silent retries, cherry-picking</td><td>Every run in the card's Runs table</td></tr>
+      <tr><td>Wasted compute</td><td>Smoke test before any cluster job</td></tr>
+      <tr><td>Untraceable claims</td><td>Every number cites a card or dataset ID</td></tr>
+    </tbody>
+  </table></div>
+</section>
 
-      <section id="installation">
-        <h2>3. Installation</h2>
-        <p>Add the kit folder to your project, open Claude Code there, and ask it to read
-           <code>instructions.md</code> and configure the repository. Claude inspects the repo,
-           runs the <code>questions.md</code> interview (offer the Recommended defaults profile to
-           go fast), and generates the harness. It validates with the scripts and proposes the
-           first card (usually a baseline reproduction) — but starts nothing without approval.</p>
-      </section>
+<section id="installation">
+  <h2><span class="n">2</span>Installation</h2>
+  <p>Copy the kit into the project root, open your coding agent there, and run:</p>
+  <div class="prompt">Read `research-onboarding-kit/instructions.md` and configure this repository to use Research Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.</div>
+  <p>The agent works in six phases:</p>
+  <ol>
+    <li><strong>Inspect:</strong> stack, compute, tracker, data, prior baselines, existing harness directories.</li>
+    <li><strong>Ask:</strong> the questions in <code>questions.md</code>, starting with the defaults profile (§0 is the harness).</li>
+    <li><strong>Generate:</strong> <code>AGENTS.md</code>, project map, skills, render assets and renderer, <code>PLAN.md</code>, registry, notebook, decisions, roles, approved hooks, validators, <code>.gitignore</code> entries, the first render, and finally the manifest.</li>
+    <li><strong>Validate:</strong> <code>validate_structure.py</code>, <code>validate_registry.py</code>, <code>check_placeholders.py</code>, and pages that open styled.</li>
+    <li><strong>Summarize.</strong></li>
+    <li><strong>Propose a first card:</strong> usually a baseline reproduction, rendered and waiting for approval.</li>
+  </ol>
+  <div class="note info">With the recommended defaults profile, only the project-specific questions remain: domain, commands and compute, data and frozen artifacts, the evaluation gate and the smoke test.</div>
+</section>
 
-      <section id="experiment-loop">
-        <h2>4. The experiment loop (daily workflow)</h2>
-        <p>The core skill <code>research-workflow</code> encodes the loop. Steps with the two
-           human gates marked ⛔:</p>
-        <ol>
-          <li><strong>Classify</strong> — infrastructure / experiment / analysis.</li>
-          <li><strong>Draft the card</strong> — one change under test, baseline, metrics + gate declared before launch.</li>
-          <li>⛔ <strong>Approve the card</strong> — nothing is built or run before this.</li>
-          <li><strong>Build artifacts</strong> — config + launcher + a smoke test that passes locally.</li>
-          <li><strong>Launch</strong> — cheap-local Claude may run; cluster/paid is handed over; card goes <span class="badge badge-launched">launched</span> and waits.</li>
-          <li><strong>Collect &amp; analyze</strong> — verify real results vs the gate; the skeptic refutes; log every run.</li>
-          <li>⛔ <strong>Confirm the verdict</strong> — Claude proposes; the researcher confirms.</li>
-          <li><strong>Scribe</strong> updates notebook + registry.</li>
-        </ol>
-        <p><em>Do not gate analysis on process.</em> The gates protect launches and claims; reading, plotting, and exploring stay friction-free.</p>
-      </section>
+<section id="harness-support">
+  <h2><span class="n">3</span>Harness support</h2>
+  <p>The kit's files use the Claude Code layout (<code>.claude/</code>) as the reference. In installable files, <code>&lt;harness-dir&gt;</code> stands for the real directory. <code>reference/harness-primitives.md</code> has the full mapping.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Claude Code</th><th>Codex CLI</th><th>Cursor</th><th>OpenCode</th><th>Antigravity</th></tr></thead>
+    <tbody>
+      <tr><td>Instructions</td><td><code>AGENTS.md</code> + <code>CLAUDE.md</code> stub</td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td></tr>
+      <tr><td>Skills</td><td><code>.claude/skills/</code></td><td><code>.agents/skills/</code></td><td><code>.cursor/skills/</code></td><td><code>.opencode/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+      <tr><td>Subagents</td><td><code>.claude/agents/</code></td><td><code>.codex/agents/*.toml</code></td><td><code>.cursor/agents/</code></td><td><code>.opencode/agents/</code></td><td><code>.agents/agents/</code></td></tr>
+      <tr><td>Hooks</td><td><code>.claude/settings.json</code></td><td><code>.codex/hooks.json</code></td><td><code>.cursor/hooks.json</code></td><td>JS plugin</td><td><code>.agents/hooks.json</code></td></tr>
+      <tr><td>MCP config</td><td><code>.mcp.json</code></td><td><code>.codex/config.toml</code></td><td><code>.cursor/mcp.json</code></td><td><code>opencode.json</code></td><td><code>.agents/mcp_config.json</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Where a concept is missing, the kit falls back. Roles are played in the main conversation, skills are read on demand, and hook rules stay in <code>AGENTS.md</code>. A repository can serve several harnesses at once: only skills, agents, hook wiring and MCP config are copied per harness.</p>
+</section>
 
-      <section id="state-machine">
-        <h2>5. Experiment state machine</h2>
-        <pre><code>draft → approved → launched → analyzed → done
-                       └----------------→ failed     (crash / gate not met)
-   (any) -----------------------------→ abandoned</code></pre>
-        <p><code>draft→approved</code> and <code>analyzed→done</code> are the human-only gates.
-           <code>approved→launched</code> requires a recorded smoke-test pass. A re-run of the same
-           axis is a new card (<code>__v2</code>, <code>supersedes:</code>), never an edit of a completed card.</p>
-      </section>
+<section id="daily-workflow">
+  <h2><span class="n">4</span>Daily workflow</h2>
+  <h3>1 · Draft a card</h3>
+  <div class="prompt">Use the research-workflow skill: I want to test &lt;one change&gt; against &lt;baseline&gt;. Draft the card, render it, and stop — no configs or launches until I approve it on the page.</div>
+  <p>The agent classifies the task and writes <code>experiments/&lt;ID&gt;/card.md</code>. It adds a <code>draft</code> registry record, renders <code>card.html</code> and stops.</p>
+  <h3>2 · ⛔ Approve in the browser</h3>
+  <p>Open <code>card.html</code>. The gate box shows the hypothesis, the one change and the gates. Review each item, click <strong>Approve card</strong> or <strong>Request changes</strong>, save <code>card.feedback.md</code>, and say <em class="hl">“read the feedback”</em>.</p>
+  <h3>3 · Smoke test, launch, wait</h3>
+  <p>The agent builds the config, the launcher and the smoke test, and runs the smoke test locally. It then runs the job if it is cheap and local; otherwise it hands you the exact command. It logs every run and never fills in expected numbers.</p>
+  <h3>4 · ⛔ Confirm the verdict</h3>
+  <p>When results land, the agent checks them against the gates and runs the skeptic. It then fills in Results and proposes a verdict (<code>analyzed</code>). On the page, click <strong>Confirm verdict</strong> or <strong>Dispute verdict</strong>. Confirmation sets <code>done</code>; the scribe updates the notebook and registry.</p>
+  <p class="see">Lost in a long answer? Use the <code>bro</code> skill. Stopping for the day? Use <code>closing</code>.</p>
+</section>
 
-      <section id="the-card">
-        <h2>6. The experiment card</h2>
-        <p>The central artifact: heavier than a chat message, lighter than an SDD spec. It is
-           styled HTML (open it in a browser) carrying hypothesis, the single change under test,
-           baseline, setup (config/launcher/git SHA/data hashes/env/seeds/budget/smoke), declared
-           metrics &amp; gate, real results, integrity checks, and the verdict. Results are filled
-           <strong>only</strong> from real outputs. See <code>experiments/E001_example-baseline/card.html</code>
-           for a rendered example.</p>
-      </section>
+<section id="lifecycle">
+  <h2><span class="n">5</span>Card lifecycle</h2>
+  <div class="states"><span>draft</span><i>→</i><span class="gate">approved</span><i>→</i><span>launched</span><i>→</i><span>analyzed</span><i>→</i><span class="gate">done</span></div>
+  <div class="tw"><table>
+    <thead><tr><th>Status</th><th>Meaning</th><th>Who moves it</th></tr></thead>
+    <tbody>
+      <tr><td><code>draft</code></td><td>Card being written</td><td>Agent</td></tr>
+      <tr><td><code>approved</code></td><td>⛔ Gate 1: change, gates and budget frozen</td><td><strong>Researcher only</strong></td></tr>
+      <tr><td><code>launched</code></td><td>Smoke test passed; running, often outside the session</td><td>Agent or researcher</td></tr>
+      <tr><td><code>analyzed</code></td><td>Real results checked, skeptic done, verdict proposed</td><td>Agent</td></tr>
+      <tr><td><code>done</code></td><td>⛔ Gate 2: verdict confirmed; artifacts complete</td><td><strong>Researcher only</strong></td></tr>
+      <tr><td><code>failed</code> · <code>abandoned</code></td><td>Logged negative or crash · stopped by decision</td><td>Researcher confirms</td></tr>
+    </tbody>
+  </table></div>
+  <p>A rerun of the same axis gets a <strong>new card</strong> (<code>__v2</code>, <code>supersedes:</code>). After approval, the design sections are append-only.</p>
+</section>
 
-      <section id="taxonomy">
-        <h2>7. Unit-of-work taxonomy</h2>
-        <table>
-          <thead><tr><th>Type</th><th>Path</th><th>Artifact</th></tr></thead>
-          <tbody>
-            <tr><td>Infrastructure</td><td>mini-SDD: contract + tests before code</td><td><code>infra-spec.html</code></td></tr>
-            <tr><td>Experiment</td><td>the card loop, two ⛔ gates</td><td><code>card.html</code></td></tr>
-            <tr><td>Analysis / writing</td><td>cited report (not gated on the loop)</td><td><code>analysis-report.html</code></td></tr>
-          </tbody>
-        </table>
-        <p>Classifying correctly is step 1. See <code>skills/research-workflow/classification-policy.md</code>.</p>
-      </section>
+<section id="documents">
+  <h2><span class="n">6</span>Documents and review page</h2>
+  <p>Every human-facing document is markdown with frontmatter (<code>doc:</code> names its type). The agent reads and writes only the <code>.md</code>; the page is rendered from it and never edited.</p>
+  <div class="tw"><table>
+    <thead><tr><th><code>doc:</code></th><th>File</th></tr></thead>
+    <tbody>
+      <tr><td><code>card</code></td><td><code>experiments/&lt;ID&gt;/card.md</code>: the whole experiment in one file</td></tr>
+      <tr><td><code>plan</code></td><td><code>PLAN.md</code>: objectives, phases and gates, experiment matrix</td></tr>
+      <tr><td><code>notebook</code></td><td><code>notebook/NOTEBOOK.md</code>: newest first, <code>## Resume here</code> on top</td></tr>
+      <tr><td><code>analysis</code></td><td><code>reports/&lt;slug&gt;.md</code> or <code>experiments/&lt;ID&gt;/analysis.md</code></td></tr>
+      <tr><td><code>infra-spec</code></td><td><code>specs/&lt;module&gt;/spec.md</code>: contract, requirements, acceptance tests</td></tr>
+      <tr><td><code>doc</code></td><td>Any other note, design or proposal</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Card sections</h3>
+  <p>The card's sections, in order:</p>
+  <ul>
+    <li>Summary</li>
+    <li>Hypothesis <code>H1</code></li>
+    <li>Change under test <code>C1</code></li>
+    <li>Baseline</li>
+    <li>Metrics and gate <code>M1</code>/<code>G1</code></li>
+    <li>Setup</li>
+    <li>Open questions <code>Q1</code> and Assumptions <code>A1</code> (both optional)</li>
+    <li>Plan (timeline <code>T1</code>)</li>
+    <li>Runs</li>
+    <li>Results</li>
+    <li>Skeptic <code>BLK-1</code>/<code>NBK-1</code></li>
+    <li>Verdict</li>
+    <li>Follow-ups</li>
+  </ul>
+  <h3>Render</h3>
+<pre><code>sh scripts/render.sh experiments/E012_frozen-encoder/card.md   # → card.html
+sh scripts/render.sh experiments/                              # registry.html + docs in the folder
+sh scripts/render.sh --all                                     # everything (from the project root)
+pwsh scripts/render.ps1 …                                      # Windows</code></pre>
+  <p>Each page opens on an overview with these parts:</p>
+  <ul>
+    <li>At a glance</li>
+    <li>the status stepper</li>
+    <li>key stats</li>
+    <li>a ⛔ gate box when a decision is due</li>
+    <li>Needs your decision</li>
+  </ul>
+  <p>Collapsible sections follow, with a section nav. ID chips link to their definitions, and the page prints cleanly. No runtime is needed: the markdown is embedded and rendered in the browser.</p>
+  <h3>Feedback</h3>
+  <p>Items with an ID get Accept / Change / Reject / Answer / Comment buttons. The page verdict follows the decision that is due:</p>
+  <ul>
+    <li>a draft card shows <em>Approve card</em> (gate 1)</li>
+    <li>an analyzed card shows <em>Confirm verdict</em> (gate 2)</li>
+    <li>a pending plan shows <em>Approve plan</em></li>
+  </ul>
+  <p>The researcher saves <code>&lt;name&gt;.feedback.md</code> next to the source, downloads it, or copies it into the chat. The agent applies it to the markdown, re-renders, deletes the file and summarizes in ≤ 5 lines. An approving file with no change or reject items is the gate decision, but only if the feedback did not also change the document. The agent never writes an approving file itself.</p>
+  <h3>Conciseness budgets</h3>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td>Summary</td><td>≤ 3 sentences (shown as “At a glance”)</td></tr>
+      <tr><td>Item, card field, finding</td><td>One sentence</td></tr>
+      <tr><td>Section</td><td>One screen, or a table</td></tr>
+      <tr><td>Card plan</td><td>≤ ~8 steps; a card reads in about three minutes</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each fact lives once and is referenced by ID elsewhere; optional sections that do not apply are deleted. Full conventions are in <code>skills/research-workflow/doc-format.md</code>.</p>
+</section>
 
-      <section id="subagents">
-        <h2>8. Subagents</h2>
-        <table>
-          <thead><tr><th>Agent</th><th>Role</th><th>Tools</th></tr></thead>
-          <tbody>
-            <tr><td><code>research-lead</code></td><td>Routing advisor; never crosses a gate</td><td>read/write state</td></tr>
-            <tr><td><code>experiment-designer</code></td><td>Drafts cards; refuses &gt;1 change / undeclared gate</td><td>read/write</td></tr>
-            <tr><td><code>analyst</code></td><td>Configs/launchers/smoke tests/analysis; hands over expensive runs</td><td>full</td></tr>
-            <tr><td><code>skeptic</code></td><td>Tries to refute the verdict</td><td><span class="badge badge-warning">read-only</span></td></tr>
-            <tr><td><code>scribe</code></td><td>Notebook/registry/card hygiene; reconciles vs results/</td><td>read/write</td></tr>
-            <tr><td><code>literature-scout</code></td><td>Novelty/related-work/citations</td><td><span class="badge badge-warning">read-only web</span></td></tr>
-          </tbody>
-        </table>
-        <p>Subagents cannot invoke each other; the main conversation orchestrates.</p>
-      </section>
+<section id="registry">
+  <h2><span class="n">7</span>The registry</h2>
+  <p><code>experiments/registry.json</code> is the machine source of truth for status. Each card's frontmatter mirrors its <code>status</code> and <code>gate_result</code>. <code>validate_registry.py</code> checks that records, card frontmatter and <code>results/&lt;ID&gt;/</code> agree; on disagreement, artifacts win. <code>registry.html</code> is a rendered dashboard: it shows counts by status and gate result, status filters, and links to each card. See the <a href="experiments/registry.html">example</a>.</p>
+  <p>The registry complements an existing tracker (W&amp;B, MLflow, TensorBoard); it never replaces one.</p>
+</section>
 
-      <section id="gates">
-        <h2>9. The two gates (human-in-the-loop)</h2>
-        <p>Claude works autonomously on the cheap, reversible parts (read, analyze, draft, code
-           infrastructure, smoke-test, cheap-local runs within budget). It must ask before:
-           launching expensive/long compute, spending money, changing PLAN scope/priors,
-           declaring a gate passed, deleting/regenerating data, uploading/publishing, and writing
-           paper claims. See <code>reference/human-in-the-loop-policy.md</code>.</p>
-      </section>
+<section id="roles">
+  <h2><span class="n">8</span>Roles</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Role</th><th>Does</th><th>Never</th></tr></thead>
+    <tbody>
+      <tr><td><code>research-lead</code></td><td>Reads state, routes to the next role</td><td>Skips a gate</td></tr>
+      <tr><td><code>experiment-designer</code></td><td>Drafts and renders cards</td><td>Accepts more than one change or undeclared gates</td></tr>
+      <tr><td><code>analyst</code></td><td>Configs, launchers, smoke tests, analysis, Runs and Results</td><td>Fabricates numbers or launches expensive jobs unapproved</td></tr>
+      <tr><td><code>skeptic</code></td><td>Tries to refute; returns <code>BLK-n</code> / <code>NBK-n</code></td><td>Edits anything (read-only)</td></tr>
+      <tr><td><code>scribe</code></td><td>Notebook entries, registry hygiene, re-renders</td><td>Confirms verdicts</td></tr>
+      <tr><td><code>literature-scout</code></td><td>Related-work and novelty search</td><td>Writes files (read-only)</td></tr>
+    </tbody>
+  </table></div>
+  <p>The main conversation orchestrates; roles never call each other.</p>
+</section>
 
-      <section id="compute">
-        <h2>10. Compute &amp; the implement/run split</h2>
-        <p>The expensive step often runs outside Claude's session. Claude prepares runnable,
-           resumable artifacts and hands over the exact submission command and expected outputs;
-           the human runs it; Claude analyzes the returns. Budgets live on the card; the smoke
-           test gates the queue; jobs are resumable by design; actual vs budgeted cost is tracked.
-           The <code>cluster-ops</code> pack holds the project's real scheduler recipe. See
-           <code>reference/compute-budget-policy.md</code>.</p>
-      </section>
+<section id="skills">
+  <h2><span class="n">9</span>Skills</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Core (always)</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>research-workflow</code></td><td>The loop, classification, state machine, skeptic checklist, <code>doc-format.md</code>, templates and render assets</td></tr>
+      <tr><td><code>bro</code></td><td>Re-explains your last message, a file, an ID (<code>G1</code>, <code>Q2</code>, <code>E012_slug</code>) or a term in ≤ ~150 plain words. Read-only.</td></tr>
+      <tr><td><code>closing</code></td><td>Audits registry, card frontmatter and <code>results/</code>, runs, pending feedback and notebook. Writes <code>## Resume here</code>, runs a cold-start test, and asks before committing.</td></tr>
+      <tr><td><code>rdd-update</code></td><td>Updates the harness from the kit, driven by <code>CHANGELOG.md</code> (§13)</td></tr>
+    </tbody>
+  </table></div>
+  <p>There are 14 optional packs, installed only when selected and offered in themed bundles:</p>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td>Experiments &amp; compute</td><td><code>experiment-registry</code>, <code>cluster-ops</code> (generated with your scheduler commands), <code>reproducibility-audit</code>, <code>dependency-freshness</code></td></tr>
+      <tr><td>Paper</td><td><code>paper-draft</code> (progressive LaTeX in <code>paper/</code>), <code>paper-trail</code>, <code>literature-watch</code>, <code>figure-style</code></td></tr>
+      <tr><td>Data &amp; decisions</td><td><code>data-provenance</code>, <code>decision-log</code>, <code>failure-learning</code></td></tr>
+      <tr><td>Repo &amp; session</td><td><code>git-discipline</code>, <code>project-map</code>, <code>context-audit</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
 
-      <section id="reproducibility">
-        <h2>11. Reproducibility</h2>
-        <p>Five provenance requirements per run: config-as-spec, seeds recorded, environment
-           captured (incl. git SHA, via <code>capture_environment.py</code>), data referenced by
-           hash/version, and figures regenerable by a named script. The <code>reproducibility-audit</code>
-           pack verifies a finished card against this bar before a paper. See
-           <code>reference/reproducibility-policy.md</code>.</p>
-      </section>
+<section id="hooks">
+  <h2><span class="n">10</span>Hooks</h2>
+  <p>The hooks are example scripts and are <strong>disabled by default</strong>. Every script starts with the same adapter block, which reads Claude Code, Codex, Cursor and Antigravity payloads, or <code>RDD_HOOK_FILE</code>, <code>RDD_HOOK_COMMAND</code> and the other <code>RDD_*</code> variables. Output follows <code>RDD_HOOK_OUTPUT</code> (<code>exit</code>, <code>cursor</code>, <code>antigravity</code>, <code>plain</code>). The scripts fail open without <code>jq</code>.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Hook</th><th>Class</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td><code>suggest-card.sh</code></td><td>Advisory</td><td>Config/launcher work without an approved card</td></tr>
+      <tr><td><code>frozen-path-warning.sh</code></td><td>Advisory</td><td>Write to a frozen path</td></tr>
+      <tr><td><code>smoke-test-reminder.sh</code></td><td>Advisory</td><td>Launcher written before <code>smoke_passed</code></td></tr>
+      <tr><td><code>post-results-reminder.sh</code></td><td>Advisory</td><td>Results arrived: fill Runs/Results, skeptic, re-render</td></tr>
+      <tr><td><code>block-unapproved-launch.sh</code></td><td>Blocking (opt-in)</td><td>Configs/launchers before gate 1</td></tr>
+      <tr><td><code>block-frozen-writes.sh</code></td><td>Blocking (opt-in)</td><td>Writes to frozen artifacts</td></tr>
+    </tbody>
+  </table></div>
+  <p>Gate 2, verdict confirmation, has no hook substitute by design. Wiring for each harness is in <code>hooks/settings-snippets.md</code>, and the hook contract is in <code>hooks/hooks-policy.md</code>.</p>
+</section>
 
-      <section id="frozen">
-        <h2>12. Frozen artifacts</h2>
-        <div class="frozen-warning">
-          <h4>Generate once, checksum, never mutate</h4>
-          Eval sets, splits, and reference checkpoints are frozen in
-          <code>data/frozen-manifest.json</code> and verified by <code>check_frozen.py</code>. A
-          replacement gets a new name and a decision entry; the old one is never edited in place.
-        </div>
-        <p>Advisory and blocking hooks watch frozen paths. See <code>reference/frozen-artifacts-policy.md</code>.</p>
-      </section>
+<section id="mcp">
+  <h2><span class="n">11</span>MCPs and CLIs</h2>
+  <p>The kit is local-first: no MCP and no external CLI is required. Paper-search or tracker MCPs are added only on opt-in, following <code>mcps/mcp-criteria.md</code>. Prefer a single permission-gated CLI call for one-off reads and a scoped MCP for repeated access. Any remote mutation needs per-action approval (<code>reference/cli-vs-mcp-policy.md</code>).</p>
+</section>
 
-      <section id="integrity">
-        <h2>13. Research integrity</h2>
-        <p>Every run logged (failures and negatives included); gate criteria declared before
-           launch (changing them later needs a dated decision); claims trace to artifacts; honest
-           uncertainty is first-class (an overconfident "win" is to investigate, not celebrate);
-           the skeptic refutes before a verdict is proposed. See
-           <code>reference/research-integrity-policy.md</code>.</p>
-      </section>
+<section id="policies">
+  <h2><span class="n">12</span>Policies</h2>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td>Research integrity</td><td>Gates declared before launch; every run logged; no metric shopping; changing a gate needs a dated decision</td></tr>
+      <tr><td>Reproducibility</td><td>Config-as-spec, seeds, environment capture, code SHA, data hashes</td></tr>
+      <tr><td>Compute budget</td><td>Smoke test first; expensive, cluster or paid runs are handed to the researcher</td></tr>
+      <tr><td>Frozen artifacts</td><td>Never mutate; manifest + checksums; replacements get new names</td></tr>
+      <tr><td>Human in the loop</td><td>Two gates; a gate decision can arrive as a feedback file, never one the agent wrote</td></tr>
+      <tr><td>Memory</td><td>Project memory first; global memory only with approval of the exact text; no secrets</td></tr>
+      <tr><td>Autonomy</td><td>Read-only monitoring with stop conditions; never launches expensive jobs or crosses a gate</td></tr>
+      <tr><td>Session recovery</td><td>Read <code>## Resume here</code>, then reconcile registry and cards against <code>results/</code>; artifacts win</td></tr>
+      <tr><td>Dependency freshness</td><td>Check current docs before changing ML frameworks and APIs; evidence in the card's Setup</td></tr>
+      <tr><td>Context economy</td><td>Short <code>AGENTS.md</code>; procedures in skills; durable truth in files</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each policy lives in <code>reference/</code>.</p>
+</section>
 
-      <section id="registry">
-        <h2>14. The registry &amp; validation</h2>
-        <p><code>experiments/registry.json</code> is the machine-readable source of truth (one
-           record per experiment); <code>registry.html</code> is the human dashboard.
-           <code>validate_registry.py</code> checks the JSON against the cards and the
-           <code>results/</code> directories — status/gate enums, smoke-before-launch, done needs a
-           real verdict and non-empty results, every card has a record. The schema is documented in
-           <code>templates/experiments/README.md</code>.</p>
-      </section>
+<section id="updating">
+  <h2><span class="n">13</span>Updating</h2>
+  <p>Onboarding writes <code>&lt;harness-dir&gt;/rdd-kit-manifest.json</code> with the kit version, the harness block (primary and additional directories), and one record per installed file: kit path, hashes and an <code>adapted</code> flag. Invoke <code>rdd-update</code> in the project to update the harness. It:</p>
+  <ul>
+    <li>fetches the kit</li>
+    <li>refreshes unmodified verbatim files mechanically</li>
+    <li>merges adapted files with approval</li>
+    <li>runs each <code>CHANGELOG.md</code> migration step with approval</li>
+    <li>rewrites the manifest</li>
+  </ul>
+  <p>1.x installs have no manifest, so <code>rdd-update</code> runs in bootstrap mode and converts the HTML cards to markdown. Watch the GitHub releases to hear about new versions.</p>
+</section>
 
-      <section id="notebook">
-        <h2>15. Lab notebook</h2>
-        <p><code>notebook/NOTEBOOK.html</code> is the reverse-chronological narrative (the analog of
-           the SDD <code>history.html</code>): 3–6 lines per event — what ran, what happened, what's
-           next. The scribe appends an entry on each state change.</p>
-      </section>
+<section id="configuration">
+  <h2><span class="n">14</span>Configuration</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Decision</th><th>Default</th><th><code>questions.md</code></th></tr></thead>
+    <tbody>
+      <tr><td>Harness(es) and primary directory</td><td>The one running the onboarding</td><td>§0</td></tr>
+      <tr><td>Approver for cards and verdicts</td><td>Asked</td><td>§B4</td></tr>
+      <tr><td>Commands, scheduler, GPU</td><td>Asked, never invented</td><td>§C</td></tr>
+      <tr><td>Frozen artifacts, sensitive data</td><td>Asked</td><td>§D</td></tr>
+      <tr><td>Metrics and gate, smoke test, budget</td><td>TODO gates if unknown</td><td>§E</td></tr>
+      <tr><td>Optional packs</td><td>Recommended per answers</td><td>§F16</td></tr>
+      <tr><td>Hooks</td><td>Advisory only, disabled until approved</td><td>§F17</td></tr>
+      <tr><td>Commit rendered pages</td><td>No (<code>*.html</code> gitignored)</td><td>§F18</td></tr>
+      <tr><td>Dependency freshness</td><td>Advisory</td><td>§F19</td></tr>
+    </tbody>
+  </table></div>
+  <p>Answers are recorded in <code>decisions/answers.md</code>. Unknowns become explicit TODOs, never invented values.</p>
+</section>
 
-      <section id="packs">
-        <h2>16. Skill packs</h2>
-        <p>None installed by default; onboarding recommends per answers. Eleven packs:
-           <code>experiment-registry</code>, <code>reproducibility-audit</code>, <code>cluster-ops</code>,
-           <code>literature-watch</code>, <code>paper-trail</code>, <code>paper-draft</code>,
-           <code>data-provenance</code>, <code>decision-log</code>, <code>failure-learning</code>,
-           <code>git-discipline</code>, <code>figure-style</code>. Installed skills are listed in <code>CLAUDE.md</code> by name only;
-           their bodies load when invoked. See <code>skills/optional/README.md</code>.</p>
-      </section>
+<section id="files">
+  <h2><span class="n">15</span>Kit file reference</h2>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td><code>instructions.md</code> · <code>questions.md</code> · <code>output-project-structure.md</code></td><td>Onboarding procedure, decisions, the expected result</td></tr>
+      <tr><td><code>agents/</code></td><td>The six roles</td></tr>
+      <tr><td><code>skills/research-workflow/</code></td><td>Core skill and <code>doc-format.md</code></td></tr>
+      <tr><td><code>skills/bro/</code> · <code>closing/</code> · <code>rdd-update/</code> · <code>optional/</code></td><td>Session, update and optional skills</td></tr>
+      <tr><td><code>templates/docs/</code> · <code>templates/render/</code></td><td>Document templates; page shell, <code>research.css</code>, <code>research.js</code></td></tr>
+      <tr><td><code>templates/AGENTS.md.template</code> · <code>CLAUDE.md.template</code></td><td>Project instructions and the Claude Code stub</td></tr>
+      <tr><td><code>scripts/render.sh</code> · <code>render.ps1</code></td><td>Renderer (POSIX sh / PowerShell)</td></tr>
+      <tr><td><code>scripts/*.py</code></td><td>Structure, registry, placeholder, frozen and environment checks</td></tr>
+      <tr><td><code>hooks/</code> · <code>mcps/</code> · <code>reference/</code></td><td>Hook policy and scripts; MCP criteria; theory and policies</td></tr>
+      <tr><td><code>experiments/</code> · <code>notebook/</code></td><td>Rendered examples: <a href="experiments/E002_example-label-smoothing/card.html">draft card</a>, <a href="experiments/E001_example-baseline/card.html">finished card</a>, <a href="notebook/NOTEBOOK.html">notebook</a></td></tr>
+      <tr><td><code>CHANGELOG.md</code> · <code>VERSION</code></td><td>Releases and migration steps</td></tr>
+    </tbody>
+  </table></div>
+</section>
 
-      <section id="hooks">
-        <h2>17. Hooks</h2>
-        <p>All examples, disabled by default, POSIX bash, fail open without <code>jq</code>. Advisory:
-           <code>suggest-card</code>, <code>frozen-path-warning</code>, <code>post-results-reminder</code>,
-           <code>smoke-test-reminder</code>. Blocking (opt-in): <code>block-unapproved-launch</code>,
-           <code>block-frozen-writes</code>. No mutating/dangerous hooks. The claim-side gate has no
-           hook substitute by design. See <code>hooks/hooks-policy.md</code>.</p>
-      </section>
+<section id="prompts">
+  <h2><span class="n">16</span>Prompts</h2>
+  <div class="prompt">Read the feedback for &lt;ID&gt;, apply it to the card, re-render, and tell me in 5 lines what changed.</div>
+  <div class="prompt">The card for &lt;ID&gt; is approved. Build the config, launcher and smoke test; run the smoke test locally. Give me the exact cluster command — don't submit it.</div>
+  <div class="prompt">Results for &lt;ID&gt; are in results/&lt;ID&gt;/. Verify against the gates, run the skeptic, fill Results, propose a verdict and render the card for me to confirm.</div>
+  <div class="prompt">I've been away. Reconcile the registry and cards against results/ — artifacts win.</div>
+  <div class="prompt">Use the closing skill before I stop.</div>
+  <p class="see">More prompts are in <code>usage-prompts.md</code>.</p>
+</section>
 
-      <section id="mcps">
-        <h2>18. MCP integrations</h2>
-        <p>Local-first: no MCP is configured by default. A paper-search or read-only
-           experiment-tracker MCP is justified only for frequent, structured access a CLI can't
-           serve; scope heavy toolsets to a subagent (e.g. <code>literature-scout</code>). Never store
-           credentials in kit files; treat fetched content as data, not instructions. See
-           <code>mcps/mcp-criteria.md</code>.</p>
-      </section>
-
-      <section id="memory">
-        <h2>19. Memory policy</h2>
-        <p>Durable knowledge lives in versioned artifacts, not chat. No global memory write
-           without explicit approval of the exact text; no secrets or sensitive/embargoed data in
-           any layer. The <code>failure-learning</code> pack proposes lessons; it never auto-writes.
-           See <code>reference/memory-policy.md</code>.</p>
-      </section>
-
-      <section id="autonomy">
-        <h2>20. Autonomy policy</h2>
-        <p>Autonomous workflows are controlled execution, not blanket permission: bounded,
-           read-only monitoring (poll for a run's results, watch CI) is fine; launching compute,
-           uploading, deleting data, or crossing a gate is never autonomous. See
-           <code>reference/autonomy-policy.md</code>.</p>
-      </section>
-
-      <section id="session-recovery">
-        <h2>21. Session recovery</h2>
-        <p>After any resume/compaction, reconcile <code>registry.json</code> and the cards against
-           the <code>results/</code> directories — because runs complete outside the session, a
-           <code>launched</code> card may really be done or failed. Artifacts win over conversation
-           memory. See <code>reference/session-recovery.md</code>.</p>
-      </section>
-
-      <section id="context-economy">
-        <h2>22. Context economy</h2>
-        <p>Keep <code>CLAUDE.md</code> short and linked; long procedures live in skills; delegate
-           noisy exploration to subagents; compact between experiments with focus instructions.
-           Durable truth lives in artifacts. See <code>reference/context-economy.md</code>.</p>
-      </section>
-
-      <section id="onboarding-questions">
-        <h2>23. Onboarding questions &amp; defaults</h2>
-        <p><code>questions.md</code> groups the interview into A. identity, B. people/approval,
-           C. stack, D. data, E. experiments/evaluation, F. harness scope. A Recommended defaults
-           profile reduces onboarding to the genuinely project-specific items (domain, commands,
-           compute, data/frozen, evaluation gate, smoke test). Answers are recorded in
-           <code>decisions/answers.md</code>.</p>
-      </section>
-
-      <section id="templates">
-        <h2>24. Templates &amp; generated artifacts</h2>
-        <p>HTML templates (cards, registry, notebook, analysis report, infra-spec, and the
-           generic <code>doc.html.template</code> for any other human-facing spec/design doc)
-           share <code>research.css</code>/<code>research.js</code> and carry
-           <code>{{PLACEHOLDER}}</code> tokens instantiated per artifact.
-           <strong>Every document a human is meant to read is styled HTML</strong>, never plain
-           Markdown. Markdown templates are only the Claude-facing operational files:
-           <code>CLAUDE.md</code>, <code>PLAN.md</code>, project map, decisions. Text: config,
-           launcher. The design system makes the policies visible where work happens.</p>
-      </section>
-
-      <section id="scripts">
-        <h2>25. Scripts</h2>
-        <p>Cross-platform Python (POSIX + Windows): <code>validate_registry.py</code>,
-           <code>check_frozen.py</code>, <code>capture_environment.py</code>,
-           <code>validate_structure.py</code>, <code>check_placeholders.py</code>
-           (flags only real unresolved tokens — it skips the per-artifact templates that
-           keep theirs, so the end-of-install check stays clean). Standard library only;
-           <code>capture_environment</code> excludes env vars so no secrets are captured.</p>
-      </section>
-
-      <section id="file-reference">
-        <h2>26. Kit file reference</h2>
-        <p><code>instructions.md</code> (procedure) · <code>questions.md</code> (interview) ·
-           <code>agents/</code> · <code>skills/research-workflow/</code> + <code>skills/optional/</code> ·
-           <code>templates/</code> (+ <code>assets/</code> design system) · <code>reference/</code> (theory +
-           policies) · <code>hooks/</code> · <code>mcps/</code> · <code>scripts/</code> ·
-           <code>output-project-structure.md</code> · <code>usage-prompts.md</code>. The full list is in
-           <code>manifest.md</code>.</p>
-      </section>
-
-      <section id="maintainer">
-        <h2>27. Maintainer guide</h2>
-        <p>Keep all kit files in English. Templates under <code>templates/</code> (and the optional
-           packs) use <code>{{PLACEHOLDER}}</code> syntax. Hook scripts must be POSIX bash and degrade
-           without <code>jq</code>. Agent files use the <code>name</code>/<code>description</code>/<code>tools</code>
-           frontmatter. The HTML artifacts must share <code>research.css</code>/<code>research.js</code>.
-           Run <code>scripts/update-manifest.sh</code> after adding/removing files; CI checks
-           shellcheck, Python byte-compile, no stale <code>.md</code> artifact references, placeholder
-           locations, and manifest freshness.</p>
-      </section>
-    </main>
-  </div>
+</main>
 </div>
-<script src="templates/assets/research.js"></script>
+
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  function cur(){return r.getAttribute('data-theme')||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  function lab(){var d=cur()==='dark';b.textContent=d?'☀ Light':'☾ Dark';b.setAttribute('aria-label','Switch to '+(d?'light':'dark')+' theme');}
+  if(b){b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('rdd-theme',n);}catch(e){}lab();});lab();}
+  var toc=document.getElementById('toc'),wide=window.matchMedia?matchMedia('(min-width: 1024px)'):null;
+  if(toc&&wide&&wide.matches)toc.open=true;
+  if(toc)toc.addEventListener('click',function(e){if(e.target.closest('a')&&!(wide&&wide.matches))toc.open=false;});
+  var links={};toc&&toc.querySelectorAll('a[href^="#"]').forEach(function(a){links[a.getAttribute('href').slice(1)]=a;});
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&links[e.target.id]){Object.keys(links).forEach(function(k){links[k].classList.remove('on');});links[e.target.id].classList.add('on');}});},{rootMargin:'-20% 0px -70% 0px'});
+    document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s);});}
+})();
+</script>
 </body>
 </html>

@@ -9,7 +9,7 @@
 %     (reference/research-integrity-policy.md; the `paper-trail` pack builds the
 %     claim -> card -> artifact table). Never write an "expected" or placeholder
 %     result.
-%   * Claude drafts; the author commits every scientific claim
+%   * The agent drafts; the author commits every scientific claim
 %     (reference/human-in-the-loop-policy.md).
 %
 % Match \documentclass, the bibliography package, and figure format to the target

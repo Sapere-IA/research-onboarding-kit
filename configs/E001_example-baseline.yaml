@@ -2,7 +2,7 @@
 # One config fully specifies one experiment (= one card).
 experiment:
   id: E001_example-baseline
-  card: experiments/E001_example-baseline/card.html
+  card: experiments/E001_example-baseline/card.md
   plan_ref: PLAN.md §1
 
 change_under_test: none (baseline reproduction — match the published recipe exactly)

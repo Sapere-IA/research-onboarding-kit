@@ -4,6 +4,9 @@
 PLAN.md
 research-onboarding-kit-blueprint.md
 
+# Review feedback saved from rendered pages (applied by the agent, then deleted)
+*.feedback.md
+
 # Maintainer scratch files
 bugs.md
 todolist.md

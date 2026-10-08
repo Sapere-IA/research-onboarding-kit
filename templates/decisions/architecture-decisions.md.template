@@ -9,7 +9,7 @@ Rules:
 - Append new entries below the marker, newest first.
 - Log only significant decisions. Trivial choices do not belong here.
 - Never log secrets, credentials, or sensitive/embargoed data.
-- A decision is **proposed** by Claude and recorded only after the researcher
+- A decision is **proposed** by the agent and recorded only after the researcher
   accepts it (`reference/human-in-the-loop-policy.md`).
 - When a decision is replaced, mark the old entry `Status: superseded by …`
   instead of deleting it.

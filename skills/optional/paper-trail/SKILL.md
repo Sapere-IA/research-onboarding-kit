@@ -19,7 +19,7 @@ provenance a venue expects. Enforces the claims-trace-to-artifacts rule
 
 ## When not to use
 
-- To write the scientific narrative for the author — Claude drafts and traces;
+- To write the scientific narrative for the author — the agent drafts and traces;
   the author commits the claim (`reference/human-in-the-loop-policy.md`).
 
 ## Procedure
@@ -38,10 +38,10 @@ provenance a venue expects. Enforces the claims-trace-to-artifacts rule
 ## Output artifact
 
 A claim→card→artifact table, figure-provenance list, reproducibility statement,
-and a completed venue checklist — as an analysis report.
+and a completed venue checklist — as an analysis report (`reports/paper-trail.md`).
 
 ## Safety constraints
 
-- Never write a paper claim Claude cannot trace to a real artifact.
+- Never write a paper claim the agent cannot trace to a real artifact.
 - Never overstate the reproducibility statement beyond what the cards support.
 - Do not upload/submit anything; the author submits.

@@ -31,7 +31,7 @@ Pairs with the read-only `literature-scout` agent.
    {{SOURCES}} (e.g. arXiv, Semantic Scholar, venue proceedings — fill at
    onboarding). Use an MCP only if configured (`mcps/mcp-criteria.md`).
 3. Collect findings with full references (title, authors, venue, year, link).
-4. Log findings into an analysis report or a notebook entry; for novelty, state a
+4. Log findings into an analysis report (`reports/<slug>.md`) or a notebook entry; for novelty, state a
    clear assessment (novel / partially anticipated / done before, with the cite).
 5. For citations: confirm each says what it's claimed to say; correct mismatches.
 

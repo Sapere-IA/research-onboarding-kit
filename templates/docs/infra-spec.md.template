@@ -1,0 +1,51 @@
+---
+doc: infra-spec
+title: Infra spec — {{MODULE}}
+status: draft
+approval: pending
+created: {{DATE}}
+---
+
+## Summary
+
+<!-- ≤ 3 sentences: what this code must do correctly, and who relies on it. Shown as "At a glance". -->
+
+{{SUMMARY}}
+
+## Contract
+
+<!-- Interfaces, inputs/outputs, invariants — code fences or a table, no narrative. -->
+
+```text
+{{INTERFACE}}
+```
+
+## Requirements
+
+<!-- One sentence each; observable and testable. -->
+
+REQ-1: {{REQUIREMENT}}
+
+## Acceptance tests
+
+<!-- One line each, naming the requirement it proves. Tests pass before done. -->
+
+AT-1: {{TEST}} (REQ-1).
+
+## Out of scope
+
+- {{OUT_OF_SCOPE}}
+
+## Tasks
+
+<!-- ≤ ~8 small tasks; markers [ ] [>] [x] [!]. -->
+
+1. [ ] T1: Write the failing tests — AT-1.
+2. [ ] T2: Implement — Smallest change that satisfies REQ-1.
+3. [ ] T3: Run the tests — `{{TEST_COMMAND}}`.
+
+## Review
+
+<!-- Filled after implementation: "Decision: [!ok approved] — …", then "BLK-n:" / "NBK-n:" findings, or "None.". A new frozen artifact also gets a frozen-manifest entry. -->
+
+Pending.

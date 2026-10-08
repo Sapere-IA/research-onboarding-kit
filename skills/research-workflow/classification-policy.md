@@ -12,8 +12,8 @@ Code whose job is to be correct, not to test a hypothesis: data pipelines,
 loaders, evaluation harnesses, metric implementations, plotting libraries,
 training-loop scaffolding, cluster glue.
 
-- Path: write an `infra-spec` (`templates/infra-spec.html.template`, styled HTML)
-  — purpose, interface/contract, acceptance tests, out-of-scope — **before** code;
+- Path: write `specs/<module>/spec.md` (`infra-spec.md.template`) — contract,
+  requirements, acceptance tests, out of scope — **before** code;
   tests must pass before `done`. Ordinary software discipline.
 - Signal: "does it work / is it correct?" is the question, not "is the hypothesis
   true?".
@@ -29,7 +29,7 @@ declared gate.
 ### Analysis / writing task → cited report
 Interpretation of existing results: figures, tables, paper sections, summaries.
 
-- Path: an analysis report (`templates/analysis-report.html.template`) whose
+- Path: an analysis report (`reports/<slug>.md`, `analysis.md.template`) whose
   every quantitative claim cites a card or dataset ID. **Not** gated on the
   experiment loop — reading results, making plots, and exploring data stay
   friction-free (`reference/research-integrity-policy.md`: gates protect launches

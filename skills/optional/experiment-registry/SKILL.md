@@ -1,15 +1,16 @@
 ---
 name: experiment-registry
-description: Maintain experiments/registry.json and registry.html, the ID/superseding conventions, and the validate_registry wiring. Use when registering, updating, or auditing experiments.
+description: Maintain experiments/registry.json (and its rendered registry.html dashboard), the ID/superseding conventions, and the validate_registry wiring. Use when registering, updating, or auditing experiments.
 ---
 
 # Experiment registry
 
 ## Purpose
 
-Keep `experiments/registry.json` (the machine-readable source of truth) and
-`experiments/registry.html` (the human dashboard) accurate and consistent with
-the cards and `results/` directories.
+Keep `experiments/registry.json` (the machine-readable source of truth) accurate
+and consistent with the cards (`experiments/<ID>/card.md`) and `results/`
+directories. The dashboard `experiments/registry.html` is **rendered** from it
+(`sh scripts/render.sh experiments/registry.json`) — never hand-edited.
 
 ## When to use
 
@@ -31,9 +32,9 @@ the cards and `results/` directories.
 
 ## Procedure
 
-1. On a status change, update **both** the card's status badge and the
-   `registry.json` record (status, gate_result, smoke_passed, actual_cost,
-   code_version), and reflect it in `registry.html`.
+1. On a status change, update **both** the card's frontmatter (`status`,
+   `gate_result`, `smoke_passed`) and the `registry.json` record (plus
+   `actual_cost`, `code_version`); re-render the card and the registry.
 2. Run `python scripts/validate_registry.py`; fix or flag every reported
    inconsistency.
 3. Reconcile `launched` records against `results/<ID>/` — artifacts win
@@ -42,7 +43,7 @@ the cards and `results/` directories.
 
 ## Output artifact
 
-An updated `registry.json` + `registry.html`, validated green.
+An updated `registry.json`, validated green, and a re-rendered `registry.html`.
 
 ## Safety constraints
 

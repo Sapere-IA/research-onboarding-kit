@@ -87,7 +87,7 @@ verdict that has not survived an adversarial pass is not ready to propose.
   to artifact **IDs and paths**, not to pasted private content (see
   `reference/frozen-artifacts-policy.md` and the data-sensitivity answers in
   `decisions/answers.md`).
-- Claude proposes verdicts and decision entries; it never declares a plan gate
+- The agent proposes verdicts and decision entries; it never declares a plan gate
   passed on its own (see `reference/human-in-the-loop-policy.md`).
 
 ---

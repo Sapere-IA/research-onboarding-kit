@@ -2,8 +2,9 @@
 """Validate experiments/registry.json against the cards and results/ dirs.
 
 registry.json is the source of truth for experiment state. This checks that it is
-internally consistent and that it agrees with what is on disk (artifacts win,
-per reference/session-recovery.md). Cross-platform: standard library only.
+internally consistent and that it agrees with what is on disk: each card.md's
+frontmatter (status, gate_result) and results/<ID>/ (artifacts win, per
+reference/session-recovery.md). Cross-platform: standard library only.
 
 Usage:
     python scripts/validate_registry.py [--root .] [--registry experiments/registry.json]
@@ -23,13 +24,39 @@ GATE_RESULTS = {"pending", "pass", "fail", "inconclusive"}
 RUN_STATUSES = {"launched", "analyzed", "done"}
 
 
+# Card frontmatter keys that must equal the registry record.
+MIRRORED_KEYS = ("status", "gate_result")
+
+
+def read_frontmatter(path: Path) -> dict[str, str]:
+    """Simple `key: value` YAML frontmatter (the kit's convention); {} if none."""
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeDecodeError):
+        return {}
+    if not lines or not lines[0].startswith("---"):
+        return {}
+    meta: dict[str, str] = {}
+    for line in lines[1:]:
+        if line.startswith("---"):
+            return meta
+        if not line.strip() or line.lstrip().startswith("#") or ":" not in line:
+            continue
+        key, _, value = line.partition(":")
+        value = value.split(" #", 1)[0].strip().strip("'\"")
+        meta[key.strip()] = value
+    return {}  # frontmatter never closed
+
+
 def load_registry(path: Path) -> dict:
     with path.open(encoding="utf-8") as fh:
         return json.load(fh)
 
 
-def validate(root: Path, registry_path: Path) -> list[str]:
+def validate(root: Path, registry_path: Path, warnings: list[str] | None = None) -> list[str]:
     errors: list[str] = []
+    if warnings is None:
+        warnings = []
     if not registry_path.exists():
         return [f"registry not found: {registry_path}"]
 
@@ -65,6 +92,17 @@ def validate(root: Path, registry_path: Path) -> list[str]:
             errors.append(f"{rid}: missing 'card_path'")
         elif not (root / card_path).exists():
             errors.append(f"{rid}: card_path does not exist: {card_path}")
+        elif card_path.endswith(".html"):
+            warnings.append(f"{rid}: legacy card.html (v1); convert to card.md with the rdd-update skill")
+        else:
+            meta = read_frontmatter(root / card_path)
+            if not meta:
+                errors.append(f"{rid}: {card_path} has no frontmatter")
+            for key in MIRRORED_KEYS:
+                reg_value = rec.get(key, "pending" if key == "gate_result" else None)
+                if meta and meta.get(key) != reg_value:
+                    errors.append(f"{rid}: card {key} {meta.get(key)!r} != registry {reg_value!r} "
+                                  "(update both together)")
 
         # smoke test must be recorded before launch
         if status in RUN_STATUSES and not rec.get("smoke_passed"):
@@ -101,7 +139,8 @@ def validate(root: Path, registry_path: Path) -> list[str]:
     exp_dir = root / "experiments"
     if exp_dir.exists():
         for child in sorted(exp_dir.iterdir()):
-            if child.is_dir() and (child / "card.html").exists() and child.name not in ids:
+            has_card = (child / "card.md").exists() or (child / "card.html").exists()
+            if child.is_dir() and has_card and child.name not in ids:
                 errors.append(f"experiments/{child.name}/ has a card but no registry record")
 
     return errors
@@ -115,8 +154,11 @@ def main() -> int:
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
-    errors = validate(root, root / args.registry)
+    warnings: list[str] = []
+    errors = validate(root, root / args.registry, warnings)
 
+    for w in warnings:
+        print(f"warning: {w}")
     if errors:
         print("registry validation FAILED:")
         for e in errors:
