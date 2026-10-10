@@ -57,6 +57,18 @@ An unbounded loop is a policy violation even when read-only.
 - The gate hooks (`block-unapproved-launch.sh`, `block-frozen-writes.sh`) fire in headless and background runs too; disabling one to let a run proceed is a violation, not a workaround.
 - The deliverable is a **report** — never a launched job, mutated dataset, uploaded result, or confirmed gate.
 
+## Recorded exception: goblin-mode
+
+The optional `goblin-mode` skill pack (`skills/optional/goblin-mode/`) is the one sanctioned way to cross the two RDD gates and reach a pushed branch without a human checkpoint. Installing it is the recorded decision this policy requires, and the exception is narrow:
+
+- It applies only when the researcher invokes the skill explicitly, to the one card named, in that session. Nothing in it extends to loops, routines, Stop hooks or headless runs started for other reasons.
+- The invocation **is** the gate decision, at both gates: it is written to the card frontmatter and the registry with notes saying the card was not human-reviewed before launch and the verdict was not human-confirmed, so `block-unapproved-launch` still sees an approved card and no hook is bypassed.
+- The skeptic still runs; blocking concerns still block. Results come only from real outputs.
+- Compute: cheap-local launches within the card's declared budget and the project budget. Cluster or paid launches only if a recorded decision in `decisions/` pre-authorizes them, and never over budget; otherwise the run ends `launched` with the exact hand-over command.
+- Git: feature branch, commits, push and one PR. Never a merge, a force-push, the default or a protected branch, or a disabled hook.
+- Still never autonomous, even inside goblin-mode: spending money, deleting or regenerating data, frozen artifacts, uploading results anywhere but the git remote, moving a `PLAN.md` gate, changing plan objectives or scope, writing paper claims, memory or decision-log writes (propose-only), and any open question about the hypothesis, change, gate criteria or budget — the run stops instead.
+- Bounds are declared in the skill: 3 consecutive fix attempts per failure, immediate stop on hook or permission denial.
+
 ## Permission posture
 
 - Never run autonomously with permissions fully bypassed outside a disposable, credential-free sandbox.

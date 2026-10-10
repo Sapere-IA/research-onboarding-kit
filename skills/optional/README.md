@@ -29,7 +29,7 @@ For each selected pack, copy `skills/optional/<name>/` to `<harness-dir>/skills/
 | `project-map` | Refresh the project map when structure changes | Large or evolving repos |
 | `context-audit` | Inspect and reduce context-window usage in long sessions | Long analysis sessions |
 
-Every pack documents: purpose, when to use, when not to use, required inputs, output artifact, and safety constraints. All packs are advisory or permission-gated: none mutates external systems, compute, or memory without explicit researcher approval, and none crosses an RDD gate.
+Every pack documents: purpose, when to use, when not to use, required inputs, output artifact, and safety constraints. All packs are advisory or permission-gated: none mutates external systems, compute, or memory without explicit researcher approval, and none crosses an RDD gate. The one exception is `goblin-mode`, where the researcher gives both gate decisions up front by invoking it; it still never merges, spends beyond the card budget, moves a plan gate, writes paper text or memory, or touches frozen artifacts.
 
 ## Themed bundles (for a chooser capped at four options)
 
@@ -40,4 +40,4 @@ Selecting a bundle *proposes* its packs; each is still confirmed individually, n
 | Experiments & compute | `experiment-registry`, `cluster-ops`, `reproducibility-audit`, `dependency-freshness` |
 | Paper | `paper-draft`, `paper-trail`, `literature-watch`, `figure-style` |
 | Data & decisions | `data-provenance`, `decision-log`, `failure-learning` |
-| Repo & session | `git-discipline`, `project-map`, `context-audit` |
+| Repo, session & autonomy | `git-discipline`, `project-map`, `context-audit`, `goblin-mode` |

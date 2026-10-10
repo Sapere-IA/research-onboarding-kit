@@ -2,6 +2,23 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `rdd-update` must do to bring an existing install up to date). The `rdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with researcher approval.
 
+## 2.1.0 — 2026-10-10
+
+Mirrors `sdd-onboarding-kit` 3.1.0.
+
+### Changes
+
+- **New optional pack: `goblin-mode`.** Runs one experiment card (or infra-spec) unattended, as far as it can go: the invocation is recorded in the card frontmatter and the registry as the researcher's decision at **both** RDD gates (with notes that the card was not human-reviewed before launch and the verdict was not human-confirmed), then card, config, launcher, smoke test, launch within the card's budget, analysis, skeptic, verdict, notebook and registry, the `closing` handoff, commits on a feature branch, push and one pull request — with no question to the researcher until the final report. Two end states: **completed** when results came back in the session, or **launched and waiting** when the run is on a cluster or longer than the session (re-invoking on the same ID continues from analysis). It declares a goal condition the harness's persistence feature can check (`/goal` on Claude Code; single pass elsewhere), bounds (3 consecutive fix attempts per failure, the card and project compute budgets, immediate stop on hook or permission denial), and a "deciding alone" rule: how-to-run questions are resolved conservatively and recorded as auto-decided; questions about the hypothesis, change, gate criteria, budget, frozen data, money, plan scope or paper claims stop the run. Never merges, force-pushes, touches the default or protected branches, moves a `PLAN.md` gate, writes paper text, memory or decision logs (propose-only), or disables a hook. An early stop leaves WIP committed on the branch and a `## Resume here` handoff.
+- **Autonomy and human-in-the-loop policies: recorded exception.** `reference/autonomy-policy.md` gains a "Recorded exception: goblin-mode" section scoping the only sanctioned way across the gates without a human checkpoint; `reference/human-in-the-loop-policy.md` points to it. Installing the pack is the recorded decision the policies require.
+- **Onboarding.** `questions.md` §F16: the agent never suggests `goblin-mode` (install only when asked by name) and, if selected, confirms what it relaxes and records it in `decisions/answers.md`. The "Repo & session" bundle is now "Repo, session & autonomy". `skills/optional/README.md`, `README.md` and `DOCUMENTATION.html` list 15 packs.
+
+### Migration (from 2.0.0)
+
+Nothing is required. Optional steps, each with approval:
+
+1. If `autonomy-policy.md` or `human-in-the-loop-policy.md` was vendored under `<harness-dir>/reference/`, refresh it from the kit.
+2. If the researcher asks for `goblin-mode`, copy `skills/optional/goblin-mode/SKILL.md` to `<harness-dir>/skills/goblin-mode/SKILL.md` in every harness directory, add it by name to the installed-skills list in `AGENTS.md`, make sure the git policy names the branch convention, default branch and PR tooling, and record the selection and the relaxed items (both gates by invocation, cheap-local launches within budget, whether cluster launches within budget are pre-authorized, feature branch + PR, 3 fix attempts, no time cap) in `decisions/answers.md` (and `decisions/workflow-decisions.md` if the `decision-log` pack is installed).
+
 ## 2.0.0 — 2026-10-08
 
 Brings the kit in line with its sibling, the `sdd-onboarding-kit` (2.0 → 3.0).

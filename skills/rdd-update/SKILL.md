@@ -79,6 +79,10 @@ The `CHANGELOG.md` entry stays authoritative; these are the steps it implies. Ea
 10. **Validators.** Refresh `scripts/validate_structure.py`, `validate_registry.py` and `check_placeholders.py` (they now read `card.md` frontmatter, `AGENTS.md` and `<harness-dir>`).
 11. **Manifest.** Write `<harness-dir>/rdd-kit-manifest.json` (step 7).
 
+#### 2.0.0 → 2.1.0
+
+No mandatory step. If `autonomy-policy.md` or `human-in-the-loop-policy.md` is vendored under `<harness-dir>/reference/`, refresh it. Install the `goblin-mode` pack only if the researcher asks for it (`CHANGELOG.md` 2.1.0 Migration step 2).
+
 ### 7. Rewrite the manifest and report
 
 - Rewrite `<harness-dir>/rdd-kit-manifest.json`: new `kit_version`, `updated_at`, the `harness` block, `commit_rendered_pages`, fresh hashes for every touched file; add records for newly installed files and drop records for removed ones.

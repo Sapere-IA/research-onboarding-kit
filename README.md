@@ -99,7 +99,7 @@ The agent inspects the repository and asks the questions in `questions.md`, star
 
 **Only when you select them:**
 
-- Any of 14 optional packs ([`skills/optional/`](skills/optional/README.md)): `experiment-registry`, `cluster-ops`, `reproducibility-audit`, `dependency-freshness`, `paper-draft`, `paper-trail`, `literature-watch`, `figure-style`, `data-provenance`, `decision-log`, `failure-learning`, `git-discipline`, `project-map` and `context-audit`.
+- Any of 15 optional packs ([`skills/optional/`](skills/optional/README.md)): `experiment-registry`, `cluster-ops`, `reproducibility-audit`, `dependency-freshness`, `paper-draft`, `paper-trail`, `literature-watch`, `figure-style`, `data-provenance`, `decision-log`, `failure-learning`, `git-discipline`, `project-map`, `context-audit` and `goblin-mode` (one card unattended, invocation = both gate decisions; only when asked for by name).
 - Hooks: harness-neutral example scripts, advisory or blocking, disabled by default.
 - MCPs: none are configured by default.
 
@@ -122,7 +122,7 @@ Watch this repository's releases (**Watch → Custom → Releases**). To update 
 - **Every run is logged** and no metrics are shopped for.
 - **Memory discipline:** nothing is written to global memory without approval of the exact text, and no secrets or embargoed data go into any layer.
 - **Hooks** are advisory or blocking, never mutating, and off by default.
-- **Autonomy** is limited to read-only monitoring and never crosses a gate.
+- **Autonomy** is limited to read-only monitoring and never crosses a gate; the opt-in `goblin-mode` pack is the one recorded exception, scoped to a single invoked card.
 
 ## Key files
 
@@ -133,7 +133,7 @@ Watch this repository's releases (**Watch → Custom → Releases**). To update 
 | `agents/` | The six research roles |
 | `skills/research-workflow/` | The core loop, `doc-format.md`, state machine, skeptic checklist |
 | `skills/bro/`, `skills/closing/`, `skills/rdd-update/` | Session and update skills |
-| `skills/optional/` | 14 optional packs |
+| `skills/optional/` | 15 optional packs |
 | `templates/docs/` | Card, plan, notebook, analysis, infra-spec, doc templates |
 | `templates/render/` | Page shell, `research.css`, `research.js` |
 | `scripts/` | Renderer (`render.sh` / `render.ps1`) and Python validators |

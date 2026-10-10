@@ -79,6 +79,7 @@
 - `skills/optional/failure-learning/SKILL.md`
 - `skills/optional/figure-style/SKILL.md`
 - `skills/optional/git-discipline/SKILL.md`
+- `skills/optional/goblin-mode/SKILL.md`
 - `skills/optional/literature-watch/SKILL.md`
 - `skills/optional/paper-draft/SKILL.md`
 - `skills/optional/paper-trail/SKILL.md`

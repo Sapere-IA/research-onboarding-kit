@@ -150,7 +150,7 @@ details .tw, details pre { margin-bottom: 12px; }
 </details>
 
 <main class="doc">
-<div style="margin-bottom:12px"><span class="tag">Documentation · v2.0.0</span></div>
+<div style="margin-bottom:12px"><span class="tag">Documentation · v2.1.0</span></div>
 <h1>Research Onboarding Kit</h1>
 <p class="lead">How to install a Research Driven Development harness and use it day to day. For an overview, see the <a href="README.html">landing page</a>.</p>
 
@@ -331,13 +331,13 @@ pwsh scripts/render.ps1 …                                      # Windows</code
       <tr><td><code>rdd-update</code></td><td>Updates the harness from the kit, driven by <code>CHANGELOG.md</code> (§13)</td></tr>
     </tbody>
   </table></div>
-  <p>There are 14 optional packs, installed only when selected and offered in themed bundles:</p>
+  <p>There are 15 optional packs, installed only when selected and offered in themed bundles:</p>
   <div class="tw"><table>
     <tbody>
       <tr><td>Experiments &amp; compute</td><td><code>experiment-registry</code>, <code>cluster-ops</code> (generated with your scheduler commands), <code>reproducibility-audit</code>, <code>dependency-freshness</code></td></tr>
       <tr><td>Paper</td><td><code>paper-draft</code> (progressive LaTeX in <code>paper/</code>), <code>paper-trail</code>, <code>literature-watch</code>, <code>figure-style</code></td></tr>
       <tr><td>Data &amp; decisions</td><td><code>data-provenance</code>, <code>decision-log</code>, <code>failure-learning</code></td></tr>
-      <tr><td>Repo &amp; session</td><td><code>git-discipline</code>, <code>project-map</code>, <code>context-audit</code></td></tr>
+      <tr><td>Repo, session &amp; autonomy</td><td><code>git-discipline</code>, <code>project-map</code>, <code>context-audit</code>, <code>goblin-mode</code> (one card unattended, invocation = both gate decisions; recorded autonomy exception, only on request by name)</td></tr>
     </tbody>
   </table></div>
 </section>
@@ -374,7 +374,7 @@ pwsh scripts/render.ps1 …                                      # Windows</code
       <tr><td>Frozen artifacts</td><td>Never mutate; manifest + checksums; replacements get new names</td></tr>
       <tr><td>Human in the loop</td><td>Two gates; a gate decision can arrive as a feedback file, never one the agent wrote</td></tr>
       <tr><td>Memory</td><td>Project memory first; global memory only with approval of the exact text; no secrets</td></tr>
-      <tr><td>Autonomy</td><td>Read-only monitoring with stop conditions; never launches expensive jobs or crosses a gate</td></tr>
+      <tr><td>Autonomy</td><td>Read-only monitoring with stop conditions; never launches expensive jobs or crosses a gate. One recorded exception: the opt-in <code>goblin-mode</code> pack, scoped to a single invoked card</td></tr>
       <tr><td>Session recovery</td><td>Read <code>## Resume here</code>, then reconcile registry and cards against <code>results/</code>; artifacts win</td></tr>
       <tr><td>Dependency freshness</td><td>Check current docs before changing ML frameworks and APIs; evidence in the card's Setup</td></tr>
       <tr><td>Context economy</td><td>Short <code>AGENTS.md</code>; procedures in skills; durable truth in files</td></tr>

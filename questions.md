@@ -106,6 +106,10 @@ The kit's files use the Claude Code layout as the reference; `reference/harness-
     - `experiment-registry` recommended for every project;
     - long sessions → `context-audit`; large or fast-changing repo → `project-map`;
     - fast-moving ML libraries/APIs → `dependency-freshness`.
+    - `goblin-mode` is never suggested: install it only when the researcher asks
+      for it by name, confirm what it relaxes (invocation = both gate decisions,
+      cheap-local launches within the card budget, feature branch + PR without
+      asking, 3 fix attempts, no time cap) and record it in `decisions/answers.md`.
     Present them in the themed bundles of `skills/optional/README.md` (≤ 4 options
     per question).
 17. Hooks: none / advisory only / advisory + blocking (default: advisory only,

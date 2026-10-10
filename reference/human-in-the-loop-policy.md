@@ -93,3 +93,4 @@ permissions**: a loop or scheduled run may prepare material for a gate
 (smoke-test results, analysis, a drafted verdict) but may never cross a gate —
 no autonomous launch of expensive compute, no autonomous "gate passed", no
 autonomous upload. Autonomy is controlled execution, not delegated authority.
+The one recorded exception is the opt-in `goblin-mode` pack, scoped to a single explicitly invoked card (`reference/autonomy-policy.md` § Recorded exception).
