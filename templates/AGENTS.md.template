@@ -43,7 +43,7 @@ If a command is unknown, ask — never invent one.
 
 - `research-workflow` — the experiment loop: `{{HARNESS_DIR}}/skills/research-workflow/SKILL.md`. Classify first: infrastructure (infra-spec + tests) / experiment (card loop) / analysis (cited report).
 - `bro` — re-explains the last answer, a file, an ID (`G1`, `Q2`, `E012_slug`) or a term in plain language, in a few lines.
-- `closing` — before ending a session: brings registry, cards and notebook up to date and writes the `## Resume here` handoff.
+- `closing` — before ending a session: brings registry, cards, notebook and project memory up to date, writes the `## Resume here` handoff, commits and pushes per the git policy, and says whether it is safe to close. Invoking it is the approval for those steps.
 - `rdd-update` — updates this harness from the research-onboarding-kit (installed version and files: `{{HARNESS_DIR}}/rdd-kit-manifest.json`).
 
 Optional skills installed:

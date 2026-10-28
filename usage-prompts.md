@@ -42,8 +42,16 @@ Use the bro skill on G1 of <ID>.            (or: on your last message)
 ## End of session
 
 ```text
-Use the closing skill: bring the registry, cards and notebook up to date, write
-the Resume-here handoff, and ask me before committing.
+Use the closing skill.
+```
+
+It brings the registry, cards, notebook and project memory up to date, writes
+the Resume-here handoff, commits and pushes following the git policy, and ends
+with "Safe to close the session" or the reason it is not. Add `no push` or
+`no commit` to stop earlier:
+
+```text
+Use the closing skill, no push.
 ```
 
 ## After I approve a card

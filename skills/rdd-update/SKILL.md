@@ -83,6 +83,10 @@ The `CHANGELOG.md` entry stays authoritative; these are the steps it implies. Ea
 
 No mandatory step. If `autonomy-policy.md` or `human-in-the-loop-policy.md` is vendored under `<harness-dir>/reference/`, refresh it. Install the `goblin-mode` pack only if the researcher asks for it (`CHANGELOG.md` 2.1.0 Migration step 2).
 
+#### 2.1.0 → 2.2.0
+
+Refresh the `closing` skill in every harness directory, the vendored `memory-policy.md` and, if installed, `goblin-mode`; update the `closing` line in `AGENTS.md` (`CHANGELOG.md` 2.2.0 Migration).
+
 ### 7. Rewrite the manifest and report
 
 - Rewrite `<harness-dir>/rdd-kit-manifest.json`: new `kit_version`, `updated_at`, the `harness` block, `commit_rendered_pages`, fresh hashes for every touched file; add records for newly installed files and drop records for removed ones.

@@ -91,7 +91,7 @@ The agent inspects the repository and asks the questions in `questions.md`, star
 - The `research-workflow` skill: the loop, the state machine, classification, the skeptic checklist, `doc-format.md`, and the document templates and render assets.
 - The session skills:
   - `bro` re-explains something in plain language.
-  - `closing` audits the artifacts at the end of a session and writes the `## Resume here` handoff.
+  - `closing` audits the artifacts at the end of a session, writes the `## Resume here` handoff, updates project memory, commits and pushes, and tells you when it is safe to close.
   - `rdd-update` updates the harness from this kit.
 - `experiments/registry.json`, `notebook/NOTEBOOK.md`, `decisions/answers.md`, `scripts/render.sh` and `scripts/render.ps1`.
 - The validators: `validate_structure`, `validate_registry`, `check_placeholders`, `check_frozen` and `capture_environment`.

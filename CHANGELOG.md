@@ -2,6 +2,24 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `rdd-update` must do to bring an existing install up to date). The `rdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with researcher approval.
 
+## 2.2.0 — 2026-10-28
+
+Mirrors `sdd-onboarding-kit` 3.2.0.
+
+### Changes
+
+- **`closing` finishes the job.** Invoking `closing` is now the researcher's approval to update project memory, commit the session's work and push it: no follow-up question about committing, pushing or memory. It follows the project's git policy (branch rules, message convention, hooks never bypassed), stages only the session's files (secrets, sensitive data, `results/`, checkpoints and other git-ignored or frozen artifacts, and pre-existing unrelated changes are left out and listed), never touches `results/` or frozen artifacts, never force-pushes, stashes, resets, rebases or pulls on its own, and stops with a reason if the policy forbids committing on the current branch or the push is rejected. The report ends with `✓ Safe to close the session.` (runs in flight do not block it when the handoff names them) or `✗ Not safe to close yet: <reason>`. `no push` / `no commit` in the invocation stop earlier. Gates and verdicts stay human.
+- **Memory policy.** New "Closing" section: the invocation counts as the standing choice "project memory only" for confirmed facts; entries are written and their exact text listed in the report. Global memory still needs an explicit yes. `goblin-mode` keeps proposing memory instead of writing it and uses its own push/PR step instead of `closing` steps 7–8.
+- `usage-prompts.md`, `README.md`, `DOCUMENTATION.html` and the `AGENTS.md` template describe the new behavior.
+
+### Migration (from 2.1.0)
+
+Each step with researcher approval:
+
+1. Refresh `<harness-dir>/skills/closing/SKILL.md` in every harness directory.
+2. If `memory-policy.md` is vendored under `<harness-dir>/reference/`, refresh it; if `goblin-mode` is installed, refresh its `SKILL.md`.
+3. Update the `closing` line in the project's `AGENTS.md` to the template's wording.
+
 ## 2.1.0 — 2026-10-10
 
 Mirrors `sdd-onboarding-kit` 3.1.0.

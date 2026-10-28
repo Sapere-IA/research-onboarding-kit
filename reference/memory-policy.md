@@ -54,6 +54,10 @@ Do you want me to record this?
 
 No answer → nothing is written.
 
+## Closing
+
+Invoking the core `closing` skill is the researcher's standing answer **2. Project memory only** for the entries it finds: it writes project-scoped entries (decision logs, changed `AGENTS.md` facts, the harness's project memory if the project uses one) without asking again, and lists the exact text of each in its report so the researcher can revert any of them. It never writes global memory or unconfirmed conclusions: a project-independent lesson is listed as a proposal and goes through the confirmation above. The goblin-mode pack overrides this: it proposes, never writes.
+
 ## Entry format
 
 `templates/memory/failure-learning-entry.md` (installed by the `failure-learning` pack): title, date, scope, trigger, what went wrong, root cause, rule to remember, where to apply / not apply, source card.
@@ -66,4 +70,4 @@ No answer → nothing is written.
 
 ## Relationship to skills and hooks
 
-The `failure-learning` pack implements this policy for research mistakes (wrong prior, leaked split, unseeded run, metric shopping); the `closing` skill proposes, never writes, missing decisions and lessons at the end of a session. Advisory hooks may *suggest* these; they never write memory.
+The `failure-learning` pack implements this policy for research mistakes (wrong prior, leaked split, unseeded run, metric shopping); the `closing` skill records missing decisions and lessons at the end of a session (§ Closing). Advisory hooks may *suggest* these; they never write memory.
